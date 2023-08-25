@@ -1,10 +1,10 @@
 
-# Bazaar API
+# Baazaar API
 
 
 ## Introduction
 
-Bazaar API is an online retail backend project being built that utilises Django and Django-Rest Framework
+Baazaar API is an online retail backend project being built that utilises Django and Django-Rest Framework
 
 ## Features:
 
