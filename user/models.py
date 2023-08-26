@@ -8,10 +8,11 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 from django_countries.fields import CountryField
 from django.utils.translation import gettext_lazy as _
-
-
-
-
+from randompinfield import RandomPinField
+import logging
+from twilio.rest import Client
+from twilio.base.exceptions import TwilioRestException
+from rest_framework.exceptions import NotAcceptable
 
 class TimeStampedModel(models.Model):
     created_at= models.DateTimeField(auto_now_add=True) #profile create time
@@ -85,3 +86,75 @@ class Address(models.Model):
 
         def __str__(self):
             return self.user.get_full_name()
+        
+class SMSVerification(TimeStampedModel):
+    user= models.OneToOneField(User, related_name= 'phone', on_delete=models.CASCADE)
+    number= PhoneNumberField(unique= True)
+    pin= RandomPinField(length=6)
+    is_verified=models.BooleanField(default=False)
+    sent= models.BooleanField(default=False)
+    phone= PhoneNumberField(null=False, blank=False)
+
+    def send_confirmation(self):
+
+        logging.debug("Sending PIN %s to phone %s" % (self.pin,self.phone))
+
+        if all(
+            [
+                settings.TWILIO_ACCOUNT_SID,
+                settings.TWILIO_AUTH_TOKEN,
+                settings.TWILIO_FROM_NUMBER
+            ]
+        ):
+            
+            try:
+                twilio_client=Client(
+                    settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN
+                )
+                twilio_client.messages.create(
+                    body="Your forgotten activation code is %s" % self.pin, 
+                    to=str(self.user.profile.phone_number),
+                    from_=settings.TWILIO_FROM_NUMBER,
+                )
+
+                self.sent=True
+                self.save()
+                return True
+            except TwilioRestException as e:
+                logging.error(e)
+        else:
+            logging.warning('Twilio credentials are not set')
+    
+    def confirm(self,pin):
+        if pin==self.pin and self.verified==False:
+            self.verified=True
+            self.save()
+        else:
+            raise NotAcceptable("your pin is wrong, or this phone number has been verified before")
+        
+        return self.verified
+
+@receiver(post_save,sender=Profile)
+def send_sms_verification(sender, instance, *args, **kwargs):
+    try:
+        sms=instance.user.sms
+        if sms:
+            pin=sms.pin
+            sms.delete()
+            verification=SMSVerification.objects.create(
+                user=instance.user,
+                phone=instance.user.profile.phone_number,
+                sent= True,
+                verified=True,
+                pin=pin,
+            )
+
+    
+    except:
+        if instance.user.profile.phone_number:
+            verification=SMSVerification.objects.create(
+                user=instance.user,phone=instance.user.profile.phone_number
+            )
+            # todo remove send_confirm and make view for it
+            verification.send_confirmation()
+

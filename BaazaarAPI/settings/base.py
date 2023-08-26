@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,7 +44,8 @@ INSTALLED_APPS = [
     
 
     'phonenumber_field',
-    'django_countries'
+    'django_countries',
+    'randompinfield'
 ]
 
 MIDDLEWARE = [
@@ -117,6 +119,12 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+
+#TWILIO SETTINGS
+TWILIO_ACCOUNT_SID=config('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN= config('TWILIO_TOKEN')
+TWILIO_FROM_NUMBER=config('TWILIO_FROM')
 
 
 # Static files (CSS, JavaScript, Images)
