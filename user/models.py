@@ -14,6 +14,7 @@ from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
 from rest_framework.exceptions import NotAcceptable
 
+
 class TimeStampedModel(models.Model):
     created_at= models.DateTimeField(auto_now_add=True) #profile create time
     updated_at= models.DateTimeField(auto_now_add=True) #profile update time
@@ -161,3 +162,4 @@ def send_sms_verification(sender, instance, *args, **kwargs):
 class DeactivateUser(TimeStampedModel):
     user=models.OneToOneField(User, related_name='deactivate',on_delete=models.CASCADE)
     deactive=models.BooleanField(default=True)
+
