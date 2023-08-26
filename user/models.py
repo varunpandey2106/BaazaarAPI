@@ -158,3 +158,6 @@ def send_sms_verification(sender, instance, *args, **kwargs):
             # todo remove send_confirm and make view for it
             verification.send_confirmation()
 
+class DeactivateUser(TimeStampedModel):
+    user=models.OneToOneField(User, related_name='deactivate',on_delete=models.CASCADE)
+    deactive=models.BooleanField(default=True)
