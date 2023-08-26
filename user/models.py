@@ -6,6 +6,10 @@ from datetime import datetime, timezone, timedelta
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
+from django_countries.fields import CountryField
+from django.utils.translation import gettext_lazy as _
+
+
 
 
 
@@ -57,3 +61,27 @@ class Profile(TimeStampedModel):
 def create_user_profile(sender, instance,created,*args, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+
+
+class Address(models.Model):
+    BILLING= 'B'
+    SHIPPING= 'S'
+
+    ADDRESS_CHOICES=((BILLING,_('billing')), (SHIPPING,_('shipping')))
+
+    user=models.ForeignKey(User, related_name="addresses", on_delete=models.CASCADE)
+    address_type=models.CharField(max_length=1, choices=ADDRESS_CHOICES)
+    default=models.BooleanField(default=False)
+    country= CountryField()
+    city= models.CharField(max_length=100)
+    street_address= models.CharField(max_length=100)
+    apartment_address= models.CharField(max_length=100)
+    postal_code= models.CharField(max_length=6, blank= False)
+    created_at= models.DateTimeField(auto_now_add=True)
+    updated_at= models.DateTimeField(auto_now_add= True)
+
+    class Meta:
+        ordering= ('-created_at', )
+
+        def __str__(self):
+            return self.user.get_full_name()
