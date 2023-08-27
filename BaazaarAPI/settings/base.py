@@ -45,7 +45,11 @@ INSTALLED_APPS = [
 
     'phonenumber_field',
     'django_countries',
-    'randompinfield'
+    'randompinfield',
+    
+    'rest_auth',
+    'all_auth'
+
 ]
 
 MIDDLEWARE = [
@@ -125,6 +129,16 @@ USE_TZ = True
 TWILIO_ACCOUNT_SID=config('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN= config('TWILIO_TOKEN')
 TWILIO_FROM_NUMBER=config('TWILIO_FROM')
+
+#EMAIL SETTINGS
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your_email@gmail.com'
+EMAIL_HOST_PASSWORD = 'your_email_password'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+
 
 
 # Static files (CSS, JavaScript, Images)

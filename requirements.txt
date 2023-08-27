@@ -25,4 +25,14 @@ python-decouple==3.8
  twilio==8.7.0 
  urllib3==2.0.4 
  yarl==1.9.2
+ django-rest-auth==0.9.5 
+ six==1.16.0
+  cffi==1.15.1 
+  cryptography==41.0.3 
+  defusedxml==0.7.1 
+  django-allauth==0.55.0 
+  oauthlib==3.2.2 
+  pycparser==2.21 
+  python3-openid==3.2.0 
+  requests-oauthlib==1.3.
 
