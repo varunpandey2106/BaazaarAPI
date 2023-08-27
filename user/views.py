@@ -8,10 +8,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_auth.utils import jwt_encode
 from allauth.account.models import EmailAddress, EmailConfirmationHMAC
+from allauth.account.utils import send_email_confirmation
 
 class RegisterAPIView(RegisterView):
     @sensitive_post_parameters_m
-    def disptach(self, *args, **kwargs):
+    def dispatch(self, *args, **kwargs):
         return super(RegisterAPIView, self).dispatch(*args, **kwargs)
     
     def get_response_data(self, user):
@@ -36,7 +37,7 @@ class RegisterAPIView(RegisterView):
         if getattr(settings, "REST_USE_JWT", False):
             self.token= jwt_encode(user)
 
-        email=EmailAddress.objects.get(email=user.email, user=user)
-        confirmation= EmailConfirmationHMAC(email)
-        key= confirmation.key
+        email_address=EmailAddress.objects.get(email=user.email, user=user)
+        send_email_confirmation(self.request, email_address)
+        
 
