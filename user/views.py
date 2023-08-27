@@ -23,12 +23,16 @@ from rest_framework import permissions
 from .serializers import (
     ProfileSerializer, 
     UserSerializer,
+    CreateAddressSerializer,
     AddressSerializer
 )
 from rest_framework.generics import (
     ListAPIView, 
-    RetrieveAPIView
+    RetrieveAPIView,
+    CreateAPIView
 )
+
+from rest_framework.exceptions import NotAcceptable
 
 
 class RegisterAPIView(RegisterView):
@@ -107,6 +111,33 @@ class UserDetailView(RetrieveAPIView):
     queryset=User.objects.all()
     lookup_field='username'
 
+
+class CreateAddressAPIView(CreateAPIView):
+    permission_classes=[permissions.IsAuthenticated]
+    serializer_class=CreateAddressSerializer
+    queryset=''
+
+    def create(self, request, *args, **kwargs):
+        serializer=self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception= True)
+        serializer.save(user=request.user, primary= True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AddressDetailAPIView(RetrieveAPIView):
+    permission_classes= [permissions.IsAuthenticated]
+    serializer_class= AddressSerializer
+    queryset= Address.objects.all()
+
+    def retreive(self, request, *args, **kwargs):
+        user= request.user()
+        address=self.get_object()
+        if address.user!= user:
+            raise NotAcceptable("wrong address")
+        serializer= self.get_serializer(address)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class ListAddressAPIView(ListAPIView):
     permission_classes=[permissions.IsAuthenticated]
     serializer_class= AddressSerializer
@@ -115,6 +146,7 @@ class ListAddressAPIView(ListAPIView):
         user=self.request.user
         queryset=Address.objects.filter(user=user)
         return queryset
+
 
 
 
