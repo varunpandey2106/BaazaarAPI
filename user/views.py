@@ -16,16 +16,18 @@ from rest_auth.views import (
     PasswordChangeView,
     LogoutView,
 )
-from .models import DeactivateUser
+from .models import DeactivateUser, Address
 from rest_framework.views import APIView
 from django.contrib.auth.models import User, Permission
 from rest_framework import permissions
 from .serializers import (
     ProfileSerializer, 
+    UserSerializer,
     AddressSerializer
 )
 from rest_framework.generics import (
-    ListAPIView
+    ListAPIView, 
+    RetrieveAPIView
 )
 
 
@@ -99,11 +101,21 @@ class Profile(APIView):
         serializer=ProfileSerializer(profile,context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-class UserDetailView(ListAPIView):
+class UserDetailView(RetrieveAPIView):
     permission_classes=[permissions.IsAuthenticated]
-    serializer_class=AddressSerializer
+    serializer_class=UserSerializer
     queryset=User.objects.all()
     lookup_field='username'
+
+class ListAddressAPIView(ListAPIView):
+    permission_classes=[permissions.IsAuthenticated]
+    serializer_class= AddressSerializer
+
+    def get_queryset(self):
+        user=self.request.user
+        queryset=Address.objects.filter(user=user)
+        return queryset
+
 
 
 
