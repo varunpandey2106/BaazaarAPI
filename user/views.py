@@ -21,8 +21,13 @@ from rest_framework.views import APIView
 from django.contrib.auth.models import User, Permission
 from rest_framework import permissions
 from .serializers import (
-    ProfileSerializer
+    ProfileSerializer, 
+    AddressSerializer
 )
+from rest_framework.generics import (
+    ListAPIView
+)
+
 
 class RegisterAPIView(RegisterView):
     @sensitive_post_parameters_m
@@ -93,8 +98,12 @@ class Profile(APIView):
         profile= Profile.objects.get(pk=pk)
         serializer=ProfileSerializer(profile,context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
+    
+class UserDetailView(ListAPIView):
+    permission_classes=[permissions.IsAuthenticated]
+    serializer_class=AddressSerializer
+    queryset=User.objects.all()
+    lookup_field='username'
 
 
 
