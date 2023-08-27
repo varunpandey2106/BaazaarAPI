@@ -9,6 +9,14 @@ from rest_framework import status
 from rest_auth.utils import jwt_encode
 from allauth.account.models import EmailAddress, EmailConfirmationHMAC
 from allauth.account.utils import send_email_confirmation
+from rest_auth.views import (
+    LoginView,
+    PasswordResetView,
+    PasswordResetConfirmView,
+    PasswordChangeView,
+    LogoutView,
+)
+from .models import DeactivateUser
 
 class RegisterAPIView(RegisterView):
     @sensitive_post_parameters_m
@@ -40,4 +48,38 @@ class RegisterAPIView(RegisterView):
         email_address=EmailAddress.objects.get(email=user.email, user=user)
         send_email_confirmation(self.request, email_address)
         
+
+class LoginAPIView(LoginView):
+    queryset=""
+
+    def get_response(self):
+        serializer_class=self.get_response_serializer()
+        if getattr(settings, "REST_USE_JWT", False):
+            data= {"user": self.user, "token": self.token}
+            serializer=serializer_class(
+                intance= data, context={"request":self.request}
+            )
+        else:
+            serializer= serializer_class(
+                instance=self.token, context={"request": self.request}
+            )
+
+        response=Response(serializer.data, status=status.HTTP_200_OK)
+
+        deactivate= DeactivateUser.objects.filter(user=self.user, deactive= True)
+        if deactivate:
+            deactivate.update(deactive= False)
+        return response
+    
+    def post(self,request, *args, **kwargs):
+        self.request= request
+        self.serializer=self.get_serializer(
+            data=self.request.data, context= {"request": request}            
+        )
+        self.serializer.is_valid(raise_exception= True)
+        self.login()
+        return self.get_response()
+
+
+
 
