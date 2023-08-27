@@ -16,7 +16,7 @@ from rest_auth.views import (
     PasswordChangeView,
     LogoutView,
 )
-from .models import DeactivateUser, Address
+from .models import DeactivateUser, Address, _
 from rest_framework.views import APIView
 from django.contrib.auth.models import User, Permission
 from rest_framework import permissions
@@ -24,12 +24,14 @@ from .serializers import (
     ProfileSerializer, 
     UserSerializer,
     CreateAddressSerializer,
-    AddressSerializer
+    AddressSerializer,
+    PasswordChangeSerializer
 )
 from rest_framework.generics import (
     ListAPIView, 
     RetrieveAPIView,
-    CreateAPIView
+    CreateAPIView, 
+    GenericAPIView
 )
 
 from rest_framework.exceptions import NotAcceptable
@@ -146,6 +148,20 @@ class ListAddressAPIView(ListAPIView):
         user=self.request.user
         queryset=Address.objects.filter(user=user)
         return queryset
+
+class PasswordChangeView(GenericAPIView):
+    permission_classes=(permissions.IsAuthenticated,)
+    serializer_class=PasswordChangeSerializer
+
+    @sensitive_post_parameters_m
+    def dispatch(self, *args, **kwargs):
+        return super(PasswordChangeView, self).dispatch(*args, **kwargs)
+    
+    def post(self, request,*args, **kwargs):
+        serializer=self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception= True)
+        serializer.save()
+        return Response({"detail": _("Congratulations, password has been Changed.")})
 
 
 
