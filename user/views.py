@@ -17,6 +17,12 @@ from rest_auth.views import (
     LogoutView,
 )
 from .models import DeactivateUser
+from rest_framework.views import APIView
+from django.contrib.auth.models import User, Permission
+from rest_framework import permissions
+from .serializers import (
+    ProfileSerializer
+)
 
 class RegisterAPIView(RegisterView):
     @sensitive_post_parameters_m
@@ -79,6 +85,15 @@ class LoginAPIView(LoginView):
         self.serializer.is_valid(raise_exception= True)
         self.login()
         return self.get_response()
+
+class Profile(APIView):
+    permission_classes=[permissions.IsAuthenticated]
+
+    def get(self, request,pk):
+        profile= Profile.objects.get(pk=pk)
+        serializer=ProfileSerializer(profile,context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 
