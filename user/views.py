@@ -29,7 +29,8 @@ from .serializers import (
     PasswordResetConfirmSerializer,
     DeactivateUserSerializer, 
     SMSPinSerializer,
-    SMSVerificationSerializer
+    SMSVerificationSerializer, 
+    VerifyEmailSerializer
 
 )
 from rest_framework.generics import (
@@ -41,6 +42,7 @@ from rest_framework.generics import (
 
 from rest_framework.exceptions import NotAcceptable
 from .Backend.email import send_reset_password_email
+from allauth.account.views import ConfirmEmailView
 
 
 class RegisterAPIView(RegisterView):
@@ -265,6 +267,38 @@ class ResendSMSView(GenericAPIView):
         success=self.resend_or_create()
         return Response(dict(success=success), status=status.HTTP_200_OK)
     
+class VerifyEmail(APIView, ConfirmEmailView):
+    permission_classes= permissions.AllowAny
+    allowed_methods=('POST', 'OPTIONS', 'HEAD')
+
+    def get_serializer(self, *args, **kwargs):
+        return VerifyEmailSerializer(*args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        serializer=self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.kwargs['key']=serializer.validated_data['key']
+        confirmation=self.get_object()
+        confirmation.confirm(self.request)
+        return Response({"detail": _("ok")}, status=status.HTTP_200_OK)
+
+class ResendEmailView(APIView, ConfirmEmailView):
+    permission_classes = permissions.AllowAny
+    http_method_names = ['post']  # Specify allowed methods
+
+    def get_serializer(self, *args, **kwargs):
+        return VerifyEmailSerializer(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.kwargs['key'] = serializer.validated_data['key']
+        confirmation = self.get_object()
+        confirmation.confirm(self.request)
+        
+        return Response({"detail": _("ok")}, status=status.HTTP_200_OK)
+
+
 
     
 
