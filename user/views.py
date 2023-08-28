@@ -25,7 +25,9 @@ from .serializers import (
     UserSerializer,
     CreateAddressSerializer,
     AddressSerializer,
-    PasswordChangeSerializer
+    PasswordChangeSerializer, 
+    PasswordResetConfirmSerializer
+
 )
 from rest_framework.generics import (
     ListAPIView, 
@@ -35,6 +37,7 @@ from rest_framework.generics import (
 )
 
 from rest_framework.exceptions import NotAcceptable
+from .Backend.email import send_reset_password_email
 
 
 class RegisterAPIView(RegisterView):
@@ -162,6 +165,37 @@ class PasswordChangeView(GenericAPIView):
         serializer.is_valid(raise_exception= True)
         serializer.save()
         return Response({"detail": _("Congratulations, password has been Changed.")})
+
+class PasswordResetView(APIView):
+    def post(self, request, *args, **kwargs):
+        email=request.data.get("email", None)
+        try:
+            user= User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise NotAcceptable(_("Please enter a valid email."))
+        send_reset_password_email.delay(user)
+        return Response(
+            {"detail": _("Password reset e-mail has been sent.")},
+            status=status.HTTP_200_OK,
+        )
+    
+class PasswordResetConfirmView(GenericAPIView):
+    permission_classes=(permissions.AllowAny,)
+    serializer_class=PasswordResetConfirmSerializer
+
+    @sensitive_post_parameters_m
+    def dispatch(self, *args, **kwargs):
+        return super(PasswordResetConfirmView, self).dispatch(*args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        serializer= self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"detail": _("Password has been reset with the new password.")})
+    
+
+
+        
 
 
 

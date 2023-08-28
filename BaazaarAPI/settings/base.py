@@ -139,6 +139,14 @@ EMAIL_HOST_USER = 'your_email@gmail.com'
 EMAIL_HOST_PASSWORD = 'your_email_password'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
+# Celery Configuration
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Use your own broker URL
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # Use your own result backend
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+
 
 
 # Static files (CSS, JavaScript, Images)
