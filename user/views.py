@@ -28,7 +28,8 @@ from .serializers import (
     PasswordChangeSerializer, 
     PasswordResetConfirmSerializer,
     DeactivateUserSerializer, 
-    SMSPinSerializer
+    SMSPinSerializer,
+    SMSVerificationSerializer
 
 )
 from rest_framework.generics import (
@@ -236,7 +237,37 @@ class VerifySMSView(APIView):
         confirmation=get_object_or_404(SMSVerification, pk=pk)
         confirmation.confirm(pin=pin)
         return Response("Your phone number has been verified", status=status.HTTP_200_OK)
+    
+class ResendSMSView(GenericAPIView):
+    permission_classes=permissions.AllowAny
+    serializer_class= SMSVerificationSerializer
+    allowed_methods=("POST",)
 
+    def resend_or_create(self):
+        phone=self.request.data.get("phone")
+        send_new=self.request.data.get("new")
+        sms_verification= None
+
+        user=User.objects.filter(profile__phone_number=phone).first()
+
+        if not send_new:
+            sms_verification=(
+                SMSVerification.objects.filter(user=user, verified=False)
+                .order_by("-created")
+                .first()
+
+            )
+        if sms_verification is None:
+            sms_verification=SMSVerification.objects.create(user=user, phone=phone)
+        return sms_verification.send_confirmation()
+    
+    def post(request, self, *args, **kwargs):
+        success=self.resend_or_create()
+        return Response(dict(success=success), status=status.HTTP_200_OK)
+    
+
+
+        
 
 
 
