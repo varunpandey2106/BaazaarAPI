@@ -205,6 +205,20 @@ class DeactivateUserView(CreateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save(user=user)
         return Response("your account will be deactivated in 24 hrs")
+    
+
+class CancelDeactivateUserView(APIView):
+    permission_classes=[permissions.IsAuthenticated]
+
+    def post(request, self,*args, **kwargs):
+        user=request.user
+        deactivate= DeactivateUser.objects.get(user=user)
+        deactivate.deactive=False
+        deactivate.save()
+        user.is_active=True
+        user.save()
+        return Response("your account will be reactivated")
+    
 
 
 
