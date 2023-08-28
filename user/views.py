@@ -312,6 +312,8 @@ class ResendEmailView(APIView, ConfirmEmailView):
         
         return Response({"detail": _("ok")}, status=status.HTTP_200_OK)
 
+#sociallogins
+
 class FacebookConnectView(SocialLoginView):
     adapter_class=FacebookOAuth2Adapter
 
