@@ -26,7 +26,8 @@ from .serializers import (
     CreateAddressSerializer,
     AddressSerializer,
     PasswordChangeSerializer, 
-    PasswordResetConfirmSerializer
+    PasswordResetConfirmSerializer,
+    DeactivateUserSerializer
 
 )
 from rest_framework.generics import (
@@ -193,6 +194,18 @@ class PasswordResetConfirmView(GenericAPIView):
         serializer.save()
         return Response({"detail": _("Password has been reset with the new password.")})
     
+
+class DeactivateUserView(CreateAPIView):
+    permission_classes=[permissions.IsAuthenticated]
+    serializer_class=DeactivateUserSerializer
+    
+    def create(request, self, *args, **kwargs):
+        user= request.user
+        serializer=self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=user)
+        return Response("your account will be deactivated in 24 hrs")
+
 
 
         
