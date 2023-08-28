@@ -30,7 +30,8 @@ from .serializers import (
     DeactivateUserSerializer, 
     SMSPinSerializer,
     SMSVerificationSerializer, 
-    VerifyEmailSerializer
+    VerifyEmailSerializer, 
+    TwitterConnectSerializer
 
 )
 from rest_framework.generics import (
@@ -43,6 +44,15 @@ from rest_framework.generics import (
 from rest_framework.exceptions import NotAcceptable
 from .Backend.email import send_reset_password_email
 from allauth.account.views import ConfirmEmailView
+
+from rest_auth.registration.views import SocialConnectView, SocialLoginView
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.instagram.views import InstagramOAuth2Adapter
+from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
+
+
 
 
 class RegisterAPIView(RegisterView):
@@ -297,6 +307,19 @@ class ResendEmailView(APIView, ConfirmEmailView):
         confirmation.confirm(self.request)
         
         return Response({"detail": _("ok")}, status=status.HTTP_200_OK)
+
+class FacebookConnectView(SocialLoginView):
+    adapter_class=FacebookOAuth2Adapter
+
+class TwitterConnectView(SocialLoginView):
+    serializer_class=TwitterConnectSerializer
+    adapter_class=TwitterOAuthAdapter
+
+class GoogleConnectView(SocialLoginView):
+    adapater_class= GoogleOAuth2Adapter
+    client_class= OAuth2Client
+    callback_url= 'https://www.google.com'
+
 
 
 
