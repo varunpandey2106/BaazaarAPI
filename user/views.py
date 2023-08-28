@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import response
 from django.conf import settings
 from rest_auth.registration.views import RegisterView
@@ -16,7 +16,7 @@ from rest_auth.views import (
     PasswordChangeView,
     LogoutView,
 )
-from .models import DeactivateUser, Address, _
+from .models import DeactivateUser, Address, _ , SMSVerification
 from rest_framework.views import APIView
 from django.contrib.auth.models import User, Permission
 from rest_framework import permissions
@@ -27,7 +27,8 @@ from .serializers import (
     AddressSerializer,
     PasswordChangeSerializer, 
     PasswordResetConfirmSerializer,
-    DeactivateUserSerializer
+    DeactivateUserSerializer, 
+    SMSPinSerializer
 
 )
 from rest_framework.generics import (
@@ -218,7 +219,25 @@ class CancelDeactivateUserView(APIView):
         user.is_active=True
         user.save()
         return Response("your account will be reactivated")
+
+class VerifySMSView(APIView):
+    permission_classes=(permissions.AllowAny)
+    allowed_methods=('POST', 'OPTIONS', 'HEAD')
+
+
+    def get_serializer(self, *args, **kwargs):
+        return SMSPinSerializer(self, *args, **kwargs)
     
+    def post(self, request,pk):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        pin=int(request.data.get('pin'))
+        #todo: get sms verification
+        confirmation=get_object_or_404(SMSVerification, pk=pk)
+        confirmation.confirm(pin=pin)
+        return Response("Your phone number has been verified", status=status.HTTP_200_OK)
+
+
 
 
 
