@@ -31,14 +31,16 @@ from .serializers import (
     SMSPinSerializer,
     SMSVerificationSerializer, 
     VerifyEmailSerializer, 
-    TwitterConnectSerializer
+    TwitterConnectSerializer, 
+    UserPermissionSerializer
 
 )
 from rest_framework.generics import (
     ListAPIView, 
     RetrieveAPIView,
     CreateAPIView, 
-    GenericAPIView
+    GenericAPIView,
+    UpdateAPIView
 )
 
 from rest_framework.exceptions import NotAcceptable
@@ -52,9 +54,7 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.instagram.views import InstagramOAuth2Adapter
 from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
 
-
-
-
+#reg and login
 class RegisterAPIView(RegisterView):
     @sensitive_post_parameters_m
     def dispatch(self, *args, **kwargs):
@@ -117,6 +117,7 @@ class LoginAPIView(LoginView):
         self.login()
         return self.get_response()
 
+#profile and user
 class Profile(APIView):
     permission_classes=[permissions.IsAuthenticated]
 
@@ -131,7 +132,7 @@ class UserDetailView(RetrieveAPIView):
     queryset=User.objects.all()
     lookup_field='username'
 
-
+#address management
 class CreateAddressAPIView(CreateAPIView):
     permission_classes=[permissions.IsAuthenticated]
     serializer_class=CreateAddressSerializer
@@ -167,6 +168,7 @@ class ListAddressAPIView(ListAPIView):
         queryset=Address.objects.filter(user=user)
         return queryset
 
+#password management
 class PasswordChangeView(GenericAPIView):
     permission_classes=(permissions.IsAuthenticated,)
     serializer_class=PasswordChangeSerializer
@@ -208,7 +210,7 @@ class PasswordResetConfirmView(GenericAPIView):
         serializer.save()
         return Response({"detail": _("Password has been reset with the new password.")})
     
-
+#deactivate and cancel deactivate
 class DeactivateUserView(CreateAPIView):
     permission_classes=[permissions.IsAuthenticated]
     serializer_class=DeactivateUserSerializer
@@ -233,6 +235,7 @@ class CancelDeactivateUserView(APIView):
         user.save()
         return Response("your account will be reactivated")
 
+#sms
 class VerifySMSView(APIView):
     permission_classes=(permissions.AllowAny)
     allowed_methods=('POST', 'OPTIONS', 'HEAD')
@@ -276,7 +279,8 @@ class ResendSMSView(GenericAPIView):
     def post(request, self, *args, **kwargs):
         success=self.resend_or_create()
         return Response(dict(success=success), status=status.HTTP_200_OK)
-    
+
+#email   
 class VerifyEmail(APIView, ConfirmEmailView):
     permission_classes= permissions.AllowAny
     allowed_methods=('POST', 'OPTIONS', 'HEAD')
@@ -319,6 +323,24 @@ class GoogleConnectView(SocialLoginView):
     adapater_class= GoogleOAuth2Adapter
     client_class= OAuth2Client
     callback_url= 'https://www.google.com'
+
+#user permissions
+class RetrievePermissionView(RetrieveAPIView):
+    serializer_class=UserPermissionSerializer
+    queryset=User.objects.all()
+    lookup_field='username'
+
+class UpdatePermissionView(UpdateAPIView):
+    serializer_class=UserPermissionSerializer
+    queryset=User.objects.all()
+    lookup_field='username'
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial']= True
+        return self.update(request, *args, **kwargs)
+
+
+
 
 
 
