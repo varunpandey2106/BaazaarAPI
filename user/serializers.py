@@ -264,3 +264,13 @@ class PasswordChangeSerializer(serializers.Serializer):
 
             update_session_auth_hash(self.request, self.user)
 
+class UserMinSerializer(serializers.ModelSerializer):
+    profile_picture= serializers.ImageField(source="profile.profile_picture")
+    gender= serializers.CharField(soure="profile.gender")
+    phone_number= PhoneNumberField(source="profile.phone.number")
+
+    class Meta:
+        model= get_user_model()
+        fields=["username", "profile_picture", "gender", "phone_number"]
+                    
+
