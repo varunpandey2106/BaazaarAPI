@@ -3,12 +3,13 @@ from django.contrib.auth import authenticate, get_user_model
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from allauth.account.models import EmailAddress
-from .models import SMSVerification, Profile, DeactivateUser
+from .models import SMSVerification, Profile, DeactivateUser, Address
 from rest_auth.registration.serializers import RegisterSerializer
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework.validators import UniqueValidator
 from drf_extra_fields.fields import Base64ImageField
 from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth.models import Permission
 
 #user
 class LoginSerializer(serializers.Serializer):
@@ -272,5 +273,18 @@ class UserMinSerializer(serializers.ModelSerializer):
     class Meta:
         model= get_user_model()
         fields=["username", "profile_picture", "gender", "phone_number"]
-                    
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Address
+        exclude= 'modified'
+
+class CreateAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Permission
+        exclude= ['primary', 'user']
+
+
+
+
 
