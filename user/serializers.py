@@ -285,6 +285,27 @@ class CreateAddressSerializer(serializers.ModelSerializer):
         exclude= ['primary', 'user']
 
 
+class PermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Permission
+        fields= ["name", "codename", "content_type"]
+
+UserModel= get_user_model()
+
+class UserPermissionRetriveSerializer(serializers.ModelSerializer):
+    user_permission= PermissionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model= UserModel
+        fields=("user_permissions", )
+
+class UserPermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= UserModel
+        fields=("user_permissions",)
+        
+
+
 
 
 
