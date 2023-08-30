@@ -7,8 +7,9 @@ from .models import SMSVerification, Profile
 from rest_auth.registration.serializers import RegisterSerializer
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework.validators import UniqueValidator
+from drf_extra_fields.fields import Base64ImageField
 
-
+#user
 class LoginSerializer(serializers.Serializer):
     username=serializers.CharField(required=True, allow_blank=False)
     password=serializers.CharField(style={"input password": "password"})
@@ -153,6 +154,18 @@ class CustomRegisterSerializer(RegisterSerializer):
     def custom_signup(self, request, user):
         self.create_profile(user, self.get_cleaned_data_profile())
 
+class ProfileSerializer(serializers.ModelSerializer):
+    user=serializers.SlugRelatedField(slug_field="username", read_only =True)
+    gender= serializers.SerializerMethodField()
+    profile_picture=Base64ImageField()
+
+    def get_gender(self,obj):
+        return obj.get_gender_dispay()
+    
+    class Meta:
+        model=Profile
+        fields=["user", "profile_picture", "phone_number", "gender", "about"]
+
 class SMSVerificationSerializer(serializers.ModelSerializer):
     class Meta:
         model=SMSVerification
@@ -160,5 +173,6 @@ class SMSVerificationSerializer(serializers.ModelSerializer):
 
 class SMSPinSerializer(serializers.Serializer):
     pin= serializers.IntegerField()
-    
+
+
 
