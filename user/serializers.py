@@ -153,3 +153,12 @@ class CustomRegisterSerializer(RegisterSerializer):
     def custom_signup(self, request, user):
         self.create_profile(user, self.get_cleaned_data_profile())
 
+class SMSVerificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=SMSVerification
+        exclude= "modified"
+
+class SMSPinSerializer(serializers.Serializer):
+    pin= serializers.IntegerField()
+    
+
