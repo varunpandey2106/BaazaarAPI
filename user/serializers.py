@@ -3,7 +3,11 @@ from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from allauth.account.models import EmailAddress
-from .models import SMSVerification
+from .models import SMSVerification, Profile
+from rest_auth.registration.serializers import RegisterSerializer
+from phonenumber_field.serializerfields import PhoneNumberField
+from rest_framework.validators import UniqueValidator
+
 
 class LoginSerializer(serializers.Serializer):
     username=serializers.CharField(required=True, allow_blank=False)
@@ -40,7 +44,7 @@ class LoginSerializer(serializers.Serializer):
         return user
     
         #REV
-        
+
         def validate(self, attrs):
             username = attrs.get("username")
             password = attrs.get("password")
@@ -115,5 +119,37 @@ class LoginSerializer(serializers.Serializer):
         attrs["user"] = user
         return attrs
 
+class CustomRegisterSerializer(RegisterSerializer):
+    first_name=serializers.CharField(required=True, write_only=True)
+    last_name=serializers.CharField(required=True, write_only= True)
+    birth_date=serializers.CharField(required=True, write_only= True)
+    phone_number=PhoneNumberField(required=True, write_only=True, 
+                               validators=[
+            UniqueValidator(
+                queryset=Profile.objects.all(),
+                message=_("A user is already registered with this phone number."),
+            )
+        ],
+    )
     
+
+    def get_cleaned_data(self):
+        return{
+            'first_name': self.validated_data.get("first_name", ""),
+            'last_name': self.validated_data.get("last_name", ""),
+            'birth_date': self.validated_data.get("birth_date", ""),
+            'phone_number': self.validated_data.get("phone_number", ""),
+        }
+
+    def create_profile(self, user, validated_data):
+        user.first_name= user.validated_data.get('first_name')
+        user.last_name=  user.validated_data.get('last_name')
+        user.save()
+
+        user.profile.birth_date= user.validatded_data.get("birth_date")
+        user.profile.phone_number= user.validated_data.get("phone_number")
+        user.profile.save()
+
+    def custom_signup(self, request, user):
+        self.create_profile(user, self.get_cleaned_data_profile())
 
