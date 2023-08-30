@@ -1,9 +1,9 @@
 from rest_framework import serializers, exceptions
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from allauth.account.models import EmailAddress
-from .models import SMSVerification, Profile
+from .models import SMSVerification, Profile, DeactivateUser
 from rest_auth.registration.serializers import RegisterSerializer
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework.validators import UniqueValidator
@@ -166,6 +166,37 @@ class ProfileSerializer(serializers.ModelSerializer):
         model=Profile
         fields=["user", "profile_picture", "phone_number", "gender", "about"]
 
+class UserSerializer(serializers.ModelSerializer):
+    profile_picture=serializers.ImageField(source="profile.profile_picture")
+    gender=serializers.CharField(source="profile.gender")
+    about=serializers.CharField(source="profile.about")
+    phone_number=serializers.CharField(source="profile.about")
+    online=serializers.CharField(source="profile.online")
+
+    class Meta:
+        model= get_user_model()
+        fields = [
+            "id",
+            "username",
+            "email",
+            "password",
+            "first_name",
+            "last_name",
+            "online",
+            "last_login",
+            "gender",
+            "about",
+            "phone_number",
+            "profile_picture",
+            "is_active",
+        ]
+
+
+class DeactivateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= DeactivateUser
+
+
 class SMSVerificationSerializer(serializers.ModelSerializer):
     class Meta:
         model=SMSVerification
@@ -173,6 +204,7 @@ class SMSVerificationSerializer(serializers.ModelSerializer):
 
 class SMSPinSerializer(serializers.Serializer):
     pin= serializers.IntegerField()
+
 
 
 
