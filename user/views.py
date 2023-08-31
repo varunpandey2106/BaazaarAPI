@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import response
 from django.conf import settings
 from rest_auth.registration.views import RegisterView
-from django.views.decorators.debug import sensitive_post_parameters_m
+from django.views.decorators.debug import sensitive_post_parameters
 from rest_auth.app_settings import JWTSerializer
 from rest_framework.response import Response
 from rest_framework import status
@@ -16,10 +16,12 @@ from rest_auth.views import (
     PasswordChangeView,
     LogoutView,
 )
-from .models import DeactivateUser, Address, _ , SMSVerification
+from .models import DeactivateUser, Address, SMSVerification
+#from django.utils.translation import gettext_lazy as v
 from rest_framework.views import APIView
 from django.contrib.auth.models import User, Permission
 from rest_framework import permissions
+from .serializers import PasswordResetConfirmSerializer
 from .serializers import (
     ProfileSerializer, 
     UserSerializer,
@@ -56,7 +58,7 @@ from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
 
 #reg and login
 class RegisterAPIView(RegisterView):
-    @sensitive_post_parameters_m
+    @sensitive_post_parameters()
     def dispatch(self, *args, **kwargs):
         return super(RegisterAPIView, self).dispatch(*args, **kwargs)
     
@@ -173,7 +175,7 @@ class PasswordChangeView(GenericAPIView):
     permission_classes=(permissions.IsAuthenticated,)
     serializer_class=PasswordChangeSerializer
 
-    @sensitive_post_parameters_m
+    @sensitive_post_parameters("password")
     def dispatch(self, *args, **kwargs):
         return super(PasswordChangeView, self).dispatch(*args, **kwargs)
     
@@ -181,7 +183,7 @@ class PasswordChangeView(GenericAPIView):
         serializer=self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception= True)
         serializer.save()
-        return Response({"detail": _("Congratulations, password has been Changed.")})
+        return Response({"detail": "Congratulations, password has been Changed."})
 
 class PasswordResetView(APIView):
     def post(self, request, *args, **kwargs):
@@ -189,10 +191,10 @@ class PasswordResetView(APIView):
         try:
             user= User.objects.get(email=email)
         except User.DoesNotExist:
-            raise NotAcceptable(_("Please enter a valid email."))
+            raise NotAcceptable("Please enter a valid email.")
         send_reset_password_email.delay(user)
         return Response(
-            {"detail": _("Password reset e-mail has been sent.")},
+            {"detail": "Password reset e-mail has been sent."},
             status=status.HTTP_200_OK,
         )
     
@@ -200,7 +202,7 @@ class PasswordResetConfirmView(GenericAPIView):
     permission_classes=(permissions.AllowAny,)
     serializer_class=PasswordResetConfirmSerializer
 
-    @sensitive_post_parameters_m
+    @sensitive_post_parameters("password")
     def dispatch(self, *args, **kwargs):
         return super(PasswordResetConfirmView, self).dispatch(*args, **kwargs)
     
@@ -208,7 +210,7 @@ class PasswordResetConfirmView(GenericAPIView):
         serializer= self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({"detail": _("Password has been reset with the new password.")})
+        return Response({"detail": "Password has been reset with the new password."})
     
 #deactivate and cancel deactivate
 class DeactivateUserView(CreateAPIView):
@@ -294,7 +296,7 @@ class VerifyEmail(APIView, ConfirmEmailView):
         self.kwargs['key']=serializer.validated_data['key']
         confirmation=self.get_object()
         confirmation.confirm(self.request)
-        return Response({"detail": _("ok")}, status=status.HTTP_200_OK)
+        return Response({"detail": ("ok")}, status=status.HTTP_200_OK)
 
 class ResendEmailView(APIView, ConfirmEmailView):
     permission_classes = permissions.AllowAny
@@ -310,7 +312,7 @@ class ResendEmailView(APIView, ConfirmEmailView):
         confirmation = self.get_object()
         confirmation.confirm(self.request)
         
-        return Response({"detail": _("ok")}, status=status.HTTP_200_OK)
+        return Response({"detail": "ok"}, status=status.HTTP_200_OK)
 
 #sociallogins
 

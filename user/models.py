@@ -1,3 +1,4 @@
+#from django.utils.translation import gettext_lazy as v
 from django.db import models
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
@@ -7,7 +8,6 @@ from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 from django_countries.fields import CountryField
-from django.utils.translation import gettext_lazy as _
 from randompinfield import RandomPinField
 import logging
 from twilio.rest import Client
@@ -69,7 +69,7 @@ class Address(models.Model):
     BILLING= 'B'
     SHIPPING= 'S'
 
-    ADDRESS_CHOICES=((BILLING,_('billing')), (SHIPPING,_('shipping')))
+    ADDRESS_CHOICES=((BILLING,('billing')), (SHIPPING,('shipping')))
 
     user=models.ForeignKey(User, related_name="addresses", on_delete=models.CASCADE)
     address_type=models.CharField(max_length=1, choices=ADDRESS_CHOICES)

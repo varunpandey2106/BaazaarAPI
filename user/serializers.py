@@ -1,6 +1,6 @@
 from rest_framework import serializers, exceptions
 from django.contrib.auth import authenticate, get_user_model
-from django.utils.translation import gettext_lazy as _
+#from django.utils.translation import gettext_lazy as v 
 from django.conf import settings
 from allauth.account.models import EmailAddress
 from .models import SMSVerification, Profile, DeactivateUser, Address
@@ -10,6 +10,8 @@ from rest_framework.validators import UniqueValidator
 from drf_extra_fields.fields import Base64ImageField
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.models import Permission
+
+
 
 #user
 class LoginSerializer(serializers.Serializer):
@@ -25,7 +27,7 @@ class LoginSerializer(serializers.Serializer):
         if email and password:
             user= self.authenticate(email=email, password=password)
         else:
-            msg = _(
+            msg = (
                 'Must include "username or "email" or "phone number" and "password".'
             )
             raise exceptions.ValidationError(msg)
@@ -39,7 +41,7 @@ class LoginSerializer(serializers.Serializer):
         elif username and password:
             user=self.authenticate(username=username, password=password)
         else:
-            msg = _(
+            msg =(
                 'Must include either "username" or "email" or "phone number" and "password".'
             )
 
@@ -130,7 +132,7 @@ class CustomRegisterSerializer(RegisterSerializer):
                                validators=[
             UniqueValidator(
                 queryset=Profile.objects.all(),
-                message=_("A user is already registered with this phone number."),
+                message=("A user is already registered with this phone number."),
             )
         ],
     )
@@ -265,14 +267,34 @@ class PasswordChangeSerializer(serializers.Serializer):
 
             update_session_auth_hash(self.request, self.user)
 
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    new_password1 = serializers.CharField(max_length=128)
+    new_password2 = serializers.CharField(max_length=128)
+    uid = serializers.CharField()
+    token = serializers.CharField()
+
+    def validate(self, data):
+        # Implement  validation logic here if needed
+        return data
+
+class VerifyEmailSerializer(serializers.Serializer):
+    key = serializers.CharField(required=True, write_only=True)
+
+    def validate_key(self, value):
+        if not value:
+            raise serializers.ValidationError("Key is required.")
+        return value
+
 class UserMinSerializer(serializers.ModelSerializer):
     profile_picture= serializers.ImageField(source="profile.profile_picture")
-    gender= serializers.CharField(soure="profile.gender")
+    gender= serializers.CharField(source="profile.gender")
     phone_number= PhoneNumberField(source="profile.phone.number")
 
     class Meta:
         model= get_user_model()
         fields=["username", "profile_picture", "gender", "phone_number"]
+
+#address
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
@@ -303,7 +325,20 @@ class UserPermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model= UserModel
         fields=("user_permissions",)
-        
+
+class TwitterConnectSerializer(serializers.Serializer):
+
+    oauth_token = serializers.CharField(required=True)
+    oauth_token_secret = serializers.CharField(required=True)
+    
+    # Add validation if required
+    def validate(self, attrs):
+        # Implement  validation logic here
+
+        if attrs['oauth_token'] and attrs['oauth_token_secret']:
+            return attrs
+        else:
+            raise serializers.ValidationError("Invalid Twitter credentials.")
 
 
 

@@ -30,7 +30,7 @@ six==1.16.0
 cffi==1.15.1 
 cryptography==41.0.3 
 defusedxml==0.7.1 
-django-allauth==0.55.0 
+django-allauth==0.54.0 
 oauthlib==3.2.2 
 pycparser==2.21 
 python3-openid==3.2.0 
@@ -58,4 +58,5 @@ amqp==5.1.1
  vine==5.0.0 
  wcwidth==0.2.6
  django-extra-fields==3.0.2
+ psycopg2==2.9.7
 
