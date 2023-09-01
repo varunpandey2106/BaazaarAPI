@@ -46,7 +46,9 @@ INSTALLED_APPS = [
     'rest_auth',
     'allauth', 
     'allauth.account',
-    "allauth.socialaccount"
+    'allauth.socialaccount', 
+    'allauth.socialaccount.providers.google',
+
 
 ]
 
@@ -58,11 +60,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    # Add the account middleware:
-    "allauth.account.middleware.AccountMiddleware",
+    # 'allauth.account.middleware.AuthenticationMiddleware',
+    # 'allauth.socialaccount.middleware.SocialAccountMiddleware'
 
 ]
+
+
 
 ROOT_URLCONF = 'BaazaarAPI.urls'
 
@@ -88,7 +91,6 @@ AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
-WSGI_APPLICATION = 'BaazaarAPI.wsgi.application'
 
 
 # Database
@@ -162,6 +164,7 @@ CELERY_TIMEZONE = 'UTC'
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
