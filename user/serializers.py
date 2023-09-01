@@ -124,39 +124,53 @@ class LoginSerializer(serializers.Serializer):
         attrs["user"] = user
         return attrs
 
+from allauth.account.adapter import get_adapter
+from allauth.account.utils import setup_user_email
+
 class CustomRegisterSerializer(RegisterSerializer):
-    first_name=serializers.CharField(required=True, write_only=True)
-    last_name=serializers.CharField(required=True, write_only= True)
-    birth_date=serializers.CharField(required=True, write_only= True)
-    phone_number=PhoneNumberField(required=True, write_only=True, 
-                               validators=[
+    first_name = serializers.CharField(required=True, write_only=True)
+    last_name = serializers.CharField(required=True, write_only=True)
+    birth_date = serializers.CharField(required=True, write_only=True)
+    phone_number = PhoneNumberField(
+        required=True,
+        write_only=True,
+        validators=[
             UniqueValidator(
                 queryset=Profile.objects.all(),
                 message=("A user is already registered with this phone number."),
             )
         ],
     )
-    
+
+    def custom_signup(self, request, user):
+        user.first_name = self.validated_data.get('first_name')
+        user.last_name = self.validated_data.get('last_name')
+        user.save()
+
+        # Create a user profile
+        profile = Profile.objects.create(
+            user=user,
+            birth_date=self.validated_data.get("birth_date"),
+            phone_number=self.validated_data.get("phone_number"),
+        )
 
     def get_cleaned_data(self):
-        return{
+        return {
             'first_name': self.validated_data.get("first_name", ""),
             'last_name': self.validated_data.get("last_name", ""),
             'birth_date': self.validated_data.get("birth_date", ""),
             'phone_number': self.validated_data.get("phone_number", ""),
         }
 
-    def create_profile(self, user, validated_data):
-        user.first_name= user.validated_data.get('first_name')
-        user.last_name=  user.validated_data.get('last_name')
-        user.save()
+    def save(self, request):
+        adapter = get_adapter()
+        user = adapter.new_user(request)
+        self.cleaned_data = self.get_cleaned_data()
+        adapter.save_user(request, user, self)
+        setup_user_email(request, user, [])
+        self.custom_signup(request, user)
+        return user
 
-        user.profile.birth_date= user.validatded_data.get("birth_date")
-        user.profile.phone_number= user.validated_data.get("phone_number")
-        user.profile.save()
-
-    def custom_signup(self, request, user):
-        self.create_profile(user, self.get_cleaned_data_profile())
 
 class ProfileSerializer(serializers.ModelSerializer):
     user=serializers.SlugRelatedField(slug_field="username", read_only =True)

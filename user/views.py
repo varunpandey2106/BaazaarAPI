@@ -56,11 +56,14 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.instagram.views import InstagramOAuth2Adapter
 from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
 
+from django.utils.decorators import method_decorator
+from allauth.account.models import EmailAddress
+
 #reg and login
 class RegisterAPIView(RegisterView):
-    @sensitive_post_parameters()
-    def dispatch(self, *args, **kwargs):
-        return super(RegisterAPIView, self).dispatch(*args, **kwargs)
+    @method_decorator(sensitive_post_parameters())
+    def dispatch(self,request, *args, **kwargs): #added request argument
+        return super(RegisterAPIView, self).dispatch(request,*args, **kwargs)
     
     def get_response_data(self, user):
         if getattr(settings, "REST_USE_JWT", False):
@@ -80,12 +83,13 @@ class RegisterAPIView(RegisterView):
         )
     
     def perform_create(self, serializer):
-        user= serializer.save(self.request)
+        user= serializer.save(request=self.request)
         if getattr(settings, "REST_USE_JWT", False):
             self.token= jwt_encode(user)
-
-        email_address=EmailAddress.objects.get(email=user.email, user=user)
+        email_address= EmailAddress.objects.filter(email=user.email, user=user)
         send_email_confirmation(self.request, email_address)
+
+      
         
 
 class LoginAPIView(LoginView):
@@ -176,7 +180,7 @@ class PasswordChangeView(GenericAPIView):
     serializer_class=PasswordChangeSerializer
 
     @sensitive_post_parameters("password")
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self,request, *args, **kwargs): #added request argument
         return super(PasswordChangeView, self).dispatch(*args, **kwargs)
     
     def post(self, request,*args, **kwargs):
@@ -203,7 +207,7 @@ class PasswordResetConfirmView(GenericAPIView):
     serializer_class=PasswordResetConfirmSerializer
 
     @sensitive_post_parameters("password")
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs): #added request argument
         return super(PasswordResetConfirmView, self).dispatch(*args, **kwargs)
     
     def post(self, request, *args, **kwargs):

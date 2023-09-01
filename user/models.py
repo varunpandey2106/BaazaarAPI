@@ -38,7 +38,7 @@ class Profile(TimeStampedModel):
     profile_picture= models.ImageField(upload_to= user_directory_path, blank=True)
     phone_number= PhoneNumberField(blank= False)
     gender=models.CharField(max_length=1, choices=GENDER_CHOICES, blank=False)
-    birth_date=models.DateField(blank=False, null= False)
+    birth_date=models.DateField( null= True)
 
     def __str__(self):
         return "% " % self.user.username
@@ -94,7 +94,7 @@ class SMSVerification(TimeStampedModel):
     pin= RandomPinField(length=6)
     is_verified=models.BooleanField(default=False)
     sent= models.BooleanField(default=False)
-    phone= PhoneNumberField(null=False, blank=False)
+    phone= PhoneNumberField(null= True)
 
     def send_confirmation(self):
 
