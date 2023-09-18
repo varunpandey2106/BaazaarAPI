@@ -59,16 +59,28 @@ from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
 from django.utils.decorators import method_decorator
 from allauth.account.models import EmailAddress
 
+from rest_framework.authtoken.models import Token
+
 #reg and login
 class RegisterAPIView(RegisterView):
+
+    token= None
+
+
+
     @method_decorator(sensitive_post_parameters())
     def dispatch(self,request, *args, **kwargs): #added request argument
         return super(RegisterAPIView, self).dispatch(request,*args, **kwargs)
     
     def get_response_data(self, user):
-        if getattr(settings, "REST_USE_JWT", False):
-            data={"user":user, "token": self.token}
+        data = {"user": user, "token": self.token}
+        if not getattr(settings, "REST_USE_JWT", False):
+        # You can set default values or handle the case where REST_USE_JWT is False here.
+            pass
+
         return JWTSerializer(data).data
+
+
     
     def create(self, request, *args, **kwargs):
         serializer=self.get_serializer(data=request.data)
@@ -83,44 +95,50 @@ class RegisterAPIView(RegisterView):
         )
     
     def perform_create(self, serializer):
-        user= serializer.save(request=self.request)
+        user = serializer.save(self.request)
         if getattr(settings, "REST_USE_JWT", False):
-            self.token= jwt_encode(user)
-        email_address= EmailAddress.objects.filter(email=user.email, user=user)
-        send_email_confirmation(self.request, email_address)
+            self.token = jwt_encode(user)
+
+        email = EmailAddress.objects.get(email=user.email, user=user)
+        confirmation = EmailConfirmationHMAC(email)
+        key = confirmation.key
+        # TODO Send mail confirmation here .
+        # send_register_mail.delay(user, key)
+        print("account-confirm-email/" + key)
+        return user
+
+
 
       
         
 
 class LoginAPIView(LoginView):
-    queryset=""
+
+ 
+    queryset = ""
 
     def get_response(self):
-        serializer_class=self.get_response_serializer()
-        if getattr(settings, "REST_USE_JWT", False):
-            data= {"user": self.user, "token": self.token}
-            serializer=serializer_class(
-                intance= data, context={"request":self.request}
-            )
-        else:
-            serializer= serializer_class(
-                instance=self.token, context={"request": self.request}
-            )
+        response = super().get_response()  # Call the superclass's get_response method
 
-        response=Response(serializer.data, status=status.HTTP_200_OK)
+        # Additional customization
+        if self.user.is_authenticated:
+            deactivate = DeactivateUser.objects.filter(user=self.user, deactive=True)
+            if deactivate:
+                deactivate.update(deactive=False)
 
-        deactivate= DeactivateUser.objects.filter(user=self.user, deactive= True)
-        if deactivate:
-            deactivate.update(deactive= False)
         return response
-    
-    def post(self,request, *args, **kwargs):
-        self.request= request
-        self.serializer=self.get_serializer(
-            data=self.request.data, context= {"request": request}            
+
+    def post(self, request, *args, **kwargs):
+        self.request = request
+        self.serializer = self.get_serializer(
+            data=self.request.data, context={"request": request}
         )
-        self.serializer.is_valid(raise_exception= True)
+        self.serializer.is_valid(raise_exception=True)
         self.login()
+
+        # Create or retrieve a Token for the user
+        token, created = Token.objects.get_or_create(user=self.user)
+
         return self.get_response()
 
 #profile and user
