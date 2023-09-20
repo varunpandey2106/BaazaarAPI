@@ -16,7 +16,7 @@ from rest_auth.views import (
     PasswordChangeView,
     LogoutView,
 )
-from .models import DeactivateUser, Address, SMSVerification
+from .models import DeactivateUser, Address, SMSVerification, Profile
 #from django.utils.translation import gettext_lazy as v
 from rest_framework.views import APIView
 from django.contrib.auth.models import User, Permission
@@ -142,7 +142,7 @@ class LoginAPIView(LoginView):
         return self.get_response()
 
 #profile and user
-class Profile(APIView):
+class ProfileAPIView(APIView):
     permission_classes=[permissions.IsAuthenticated]
 
     def get(self, request,pk):
@@ -199,7 +199,7 @@ class PasswordChangeView(GenericAPIView):
 
     @sensitive_post_parameters("password")
     def dispatch(self,request, *args, **kwargs): #added request argument
-        return super(PasswordChangeView, self).dispatch(*args, **kwargs)
+        return super(PasswordChangeView, self).dispatch(request, *args, **kwargs)
     
     def post(self, request,*args, **kwargs):
         serializer=self.get_serializer(data=request.data)

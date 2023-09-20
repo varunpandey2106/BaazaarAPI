@@ -174,11 +174,11 @@ class CustomRegisterSerializer(RegisterSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     user=serializers.SlugRelatedField(slug_field="username", read_only =True)
-    gender= serializers.SerializerMethodField()
+    gender= serializers.CharField(source= "get_gender_display") # directly reference the gender field from the model and use the source attribute to specify the method to retrieve the display value. 
     profile_picture=Base64ImageField()
 
-    def get_gender(self,obj):
-        return obj.get_gender_dispay()
+    def get_gender_display(self,obj):
+        return obj.get_gender_display()
     
     class Meta:
         model=Profile
