@@ -50,7 +50,16 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     # 'allauth.socialaccount.providers.twitter.client',
     'rest_framework.authtoken', 
-    'social_django'
+    'social_django',
+    'corsheaders',
+    'rest_social_auth',
+    'drf_social_oauth2',
+    'oauth2_provider',
+    # 'social_auth',
+    'drf',
+
+
+    
 
 
 ]
@@ -65,7 +74,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'allauth.account.middleware.AuthenticationMiddleware',
     # 'allauth.socialaccount.middleware.SocialAccountMiddleware', 
-    'social_django.middleware.SocialAuthExceptionMiddleware'
+    'social_django.middleware.SocialAuthExceptionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 
 ]
 
@@ -94,12 +105,24 @@ TEMPLATES = [
 
 
 AUTHENTICATION_BACKENDS = [
+    'drf_social_oauth2.backends.DjangoOAuth2',
     'social_core.backends.facebook.FacebookOAuth2',
     'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.google.GoogleOAuth2',
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
+REST_FRAMEWORK = {
+   'DEFAULT_AUTHENTICATION_CLASSES': (
+       'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  
+       'drf_social_oauth2.authentication.SocialAuthentication',
+   )
+}
+CORS_ALLOWED_ORIGINS = [
+   "http://localhost:8000",
+   "http://127.0.0.1:8000"
+]
 
 
 # Database
@@ -173,6 +196,14 @@ SOCIAL_AUTH_TWITTER_SECRET = 'o7yyzXXExsVRjNnBp1Jk5Bihp4IZNTgQHiwePqLAioNGE8CkIX
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = '/'
+
+#GOOGLE CONFIG
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '608206504022-8udhlptn91o7tmq25clg7klmkloe7dus.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+LOGIN_URL = 'login'  # Set this to your login view name.
+LOGIN_REDIRECT_URL = 'profile/1/'  # Set this to your desired post-login redirect URL.
+
+
 
 
 # Static files (CSS, JavaScript, Images)

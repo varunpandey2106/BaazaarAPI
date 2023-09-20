@@ -13,6 +13,8 @@ import logging
 from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
 from rest_framework.exceptions import NotAcceptable
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 
 
@@ -52,6 +54,13 @@ class Profile(TimeStampedModel):
 
     def __str__(self):
         return "% " % self.user.username
+    
+    def tokens(self):
+        refresh = RefreshToken.for_user(self)
+        return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token)
+        }
     
     @property
     def last_seen(self):

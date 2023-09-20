@@ -29,7 +29,8 @@ urlpatterns = [
     path("facebook/", views.FacebookConnectView.as_view() ),
     path("twitter/", views.TwitterConnectView.as_view()),
     path("twitterlogin/", views.TwitterSocialAuthView.as_view() ),
-    path("google/", views.GoogleConnectView.as_view()), 
+    # path("google/", views.GoogleConnectView.as_view()), 
+    path("google/", views.GoogleSocialAuthView.as_view() ),
     path("deactivate-user/", views.DeactivateUserView.as_view() ),
 ]
 

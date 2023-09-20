@@ -15,10 +15,24 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, reverse
+from oauth2_provider.views import AuthorizationView
+# from djangorestframework_social_oauth2.views import AuthorizationView
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
-    path('user/', include('user.urls'))
+    path('user/', include('user.urls')),
+    # path('social_auth/', include(('social_auth.urls'),
+    #                              namespace="social_auth")),
+    # path('auth/', include('social_django.urls', namespace='drf')),
+    # path('social/', include('rest_social_auth.urls_jwt')),
+    # path('auth/', include('rest_framework_social_oauth2.urls')),
+    path('authorize/', AuthorizationView.as_view(), name='authorize'),
+    path('drf/', include('rest_framework.urls', namespace='drf')),
 ]
+
+# reverse('authorize')
+
