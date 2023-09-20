@@ -26,6 +26,10 @@ class TimeStampedModel(models.Model):
 def user_directory_path(instance, filename):
     return "users/{0}/{1}".format(instance.user.username,filename)
 
+
+AUTH_PROVIDERS = {'facebook': 'facebook', 'google': 'google',
+                  'twitter': 'twitter', 'email': 'email'}
+
 class Profile(TimeStampedModel):
     GENDER_MALE='m'
     GENDER_FEMALE='f'
@@ -41,7 +45,10 @@ class Profile(TimeStampedModel):
     gender=models.CharField(max_length=1, choices=GENDER_CHOICES, blank=False)
     birth_date=models.DateField( null= True)
     about= models.TextField(blank=True)
-    
+    auth_provider = models.CharField(
+        max_length=255, blank=False,
+        null=False, default=AUTH_PROVIDERS.get('email'))
+
 
     def __str__(self):
         return "% " % self.user.username

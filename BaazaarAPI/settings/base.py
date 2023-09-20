@@ -48,7 +48,9 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount', 
     'allauth.socialaccount.providers.google',
-    'rest_framework.authtoken'
+    # 'allauth.socialaccount.providers.twitter.client',
+    'rest_framework.authtoken', 
+    'social_django'
 
 
 ]
@@ -62,7 +64,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'allauth.account.middleware.AuthenticationMiddleware',
-    # 'allauth.socialaccount.middleware.SocialAccountMiddleware'
+    # 'allauth.socialaccount.middleware.SocialAccountMiddleware', 
+    'social_django.middleware.SocialAuthExceptionMiddleware'
 
 ]
 
@@ -81,6 +84,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'social_django.context_processors.backends',  # <-- Here
+                'social_django.context_processors.login_redirect', # <-- Her
             ],
         },
     },
@@ -88,6 +94,8 @@ TEMPLATES = [
 
 
 AUTHENTICATION_BACKENDS = [
+    'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.twitter.TwitterOAuth',
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
@@ -159,6 +167,12 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
 
+#TWITTER CONFIG
+SOCIAL_AUTH_TWITTER_KEY = 'wTLpUQeuPo9V3I7hvHuZECLcY' 
+SOCIAL_AUTH_TWITTER_SECRET = 'o7yyzXXExsVRjNnBp1Jk5Bihp4IZNTgQHiwePqLAioNGE8CkIX'
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = '/'
 
 
 # Static files (CSS, JavaScript, Images)

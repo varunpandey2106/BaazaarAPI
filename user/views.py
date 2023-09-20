@@ -1,5 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import response
+from django.urls import reverse
 from django.conf import settings
 from rest_auth.registration.views import RegisterView
 from django.views.decorators.debug import sensitive_post_parameters
@@ -34,6 +35,7 @@ from .serializers import (
     SMSVerificationSerializer, 
     VerifyEmailSerializer, 
     TwitterConnectSerializer, 
+    TwitterAuthSerializer,
     UserPermissionSerializer
 
 )
@@ -60,6 +62,10 @@ from django.utils.decorators import method_decorator
 from allauth.account.models import EmailAddress
 
 from rest_framework.authtoken.models import Token
+from allauth.socialaccount.providers.oauth.client import OAuthError
+from allauth.socialaccount.providers.oauth2.client import OAuth2Error
+
+
 
 #reg and login
 class RegisterAPIView(RegisterView):
@@ -149,6 +155,11 @@ class ProfileAPIView(APIView):
         profile= Profile.objects.get(pk=pk)
         serializer=ProfileSerializer(profile,context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    # def get(self, request, pk):
+    #     # Construct the URL for the user profile using the primary key
+    #     profile_url = reverse('ProfileAPIView', kwargs={'pk': pk})  
+    #     return redirect(profile_url)
     
 class UserDetailView(RetrieveAPIView):
     permission_classes=[permissions.IsAuthenticated]
@@ -345,6 +356,14 @@ class TwitterConnectView(SocialLoginView):
     serializer_class=TwitterConnectSerializer
     adapter_class=TwitterOAuthAdapter
 
+class TwitterSocialAuthView(GenericAPIView):
+    serializer_class = TwitterAuthSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+    
 class GoogleConnectView(SocialLoginView):
     adapater_class= GoogleOAuth2Adapter
     client_class= OAuth2Client

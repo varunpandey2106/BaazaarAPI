@@ -10,6 +10,8 @@ from rest_framework.validators import UniqueValidator
 from drf_extra_fields.fields import Base64ImageField
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.models import Permission
+from .Backend import twitterhelper
+from .register import register_social_user
 
 
 
@@ -355,6 +357,31 @@ class TwitterConnectSerializer(serializers.Serializer):
         else:
             raise serializers.ValidationError("Invalid Twitter credentials.")
 
+class TwitterAuthSerializer(serializers.Serializer):
+    """Handles serialization of twitter related data"""
+    access_token_key = serializers.CharField()
+    access_token_secret = serializers.CharField()
+
+    def validate(self, attrs):
+
+        access_token_key = attrs.get('access_token_key')
+        access_token_secret = attrs.get('access_token_secret')
+
+        user_info = twitterhelper.TwitterAuthTokenVerification.validate_twitter_auth_tokens(
+            access_token_key, access_token_secret)
+
+        try:
+            user_id = user_info['id_str']
+            email = user_info['email']
+            name = user_info['name']
+            provider = 'twitter'
+        except:
+            raise serializers.ValidationError(
+                'The tokens are invalid or expired. Please login again.'
+            )
+
+        return register_social_user(
+            provider=provider, user_id=user_id, email=email, name=name)
 
 
 

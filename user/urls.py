@@ -12,7 +12,7 @@ from rest_auth.registration.views import RegisterView, VerifyEmailView
 #router=routers.DefaultRouter()
 from django.views.generic import TemplateView
 from django.urls import re_path
-
+from .views import LoginAPIView, TwitterConnectView
 
 
 urlpatterns = [
@@ -28,14 +28,9 @@ urlpatterns = [
     path("address/<int:pk>/", views.AddressDetailAPIView.as_view() ), 
     path("facebook/", views.FacebookConnectView.as_view() ),
     path("twitter/", views.TwitterConnectView.as_view()),
+    path("twitterlogin/", views.TwitterSocialAuthView.as_view() ),
     path("google/", views.GoogleConnectView.as_view()), 
     path("deactivate-user/", views.DeactivateUserView.as_view() ),
-
-
-    
-
-
-
 ]
 
 
