@@ -317,8 +317,8 @@ class AddressSerializer(serializers.ModelSerializer):
 
 class CreateAddressSerializer(serializers.ModelSerializer):
     class Meta:
-        model= Permission
-        exclude= ['primary', 'user']
+        model= Address
+        exclude= []
 
 
 class PermissionSerializer(serializers.ModelSerializer):
