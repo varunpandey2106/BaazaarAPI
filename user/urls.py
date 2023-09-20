@@ -24,7 +24,12 @@ urlpatterns = [
     path('password/change', views.PasswordChangeView.as_view(), name='password_change'),
     path("profile/<int:pk>/", views.ProfileAPIView.as_view()),
     path("create/address/",views.CreateAddressAPIView.as_view() ),
-    path("addresses/", views.ListAddressAPIView.as_view() )
+    path("addresses/", views.ListAddressAPIView.as_view() ),
+    path("address/<int:pk>/", views.AddressDetailAPIView.as_view() ), 
+    path("facebook/", views.FacebookConnectView.as_view() ),
+    path("twitter/", views.TwitterConnectView.as_view()),
+    path("google/", views.GoogleConnectView.as_view()), 
+    path("deactivate-user/", views.DeactivateUserView.as_view() ),
 
 
     

@@ -213,6 +213,7 @@ class UserSerializer(serializers.ModelSerializer):
 class DeactivateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model= DeactivateUser
+        exclude=[]
 
 
 class SMSVerificationSerializer(serializers.ModelSerializer):

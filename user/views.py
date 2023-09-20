@@ -239,8 +239,8 @@ class DeactivateUserView(CreateAPIView):
     permission_classes=[permissions.IsAuthenticated]
     serializer_class=DeactivateUserSerializer
     
-    def create(request, self, *args, **kwargs):
-        user= request.user
+    def create(self,request, *args, **kwargs):
+        user= self.request.user
         serializer=self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(user=user)
