@@ -313,7 +313,7 @@ class UserMinSerializer(serializers.ModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model= Address
-        exclude= 'modified'
+        exclude= []
 
 class CreateAddressSerializer(serializers.ModelSerializer):
     class Meta:
