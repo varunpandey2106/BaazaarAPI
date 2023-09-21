@@ -127,6 +127,16 @@ SOCIALACCOUNT_PROVIDERS = {
             'secret': '8edb48020b6200230ede857b5e1affa494387a12',
             'key': ''
         }
+    }, 
+    'google': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': '608206504022-8udhlptn91o7tmq25clg7klmkloe7dus.apps.googleusercontent.com',
+            'secret': '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',
+            'key': ''
+        }
     }
 }
 
@@ -218,10 +228,10 @@ LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = '/'
 
 #GOOGLE CONFIG
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '608206504022-8udhlptn91o7tmq25clg7klmkloe7dus.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
-LOGIN_URL = 'login'  # Set this to your login view name.
-LOGIN_REDIRECT_URL = 'profile/1/'  # Set this to your desired post-login redirect URL.
+# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '608206504022-8udhlptn91o7tmq25clg7klmkloe7dus.apps.googleusercontent.com'
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+# LOGIN_URL = 'login'  # Set this to your login view name.
+# LOGIN_REDIRECT_URL = 'profile/1/'  # Set this to your desired post-login redirect URL.
 
 
 
