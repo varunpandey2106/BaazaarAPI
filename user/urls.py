@@ -32,6 +32,7 @@ urlpatterns = [
     # path("google/", views.GoogleConnectView.as_view()), 
     path("google/", views.GoogleSocialAuthView.as_view() ),
     path("deactivate-user/", views.DeactivateUserView.as_view() ),
+    path("cancel-deactivate/", views.CancelDeactivateUserView.as_view() ),
 ]
 
 
