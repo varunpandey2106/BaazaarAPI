@@ -65,6 +65,8 @@ class ProductSpecification(models.Model): #subset of product type
     def __str__(self):
         return self.name
 
+
+
 class Product(models.Model):
     """
     The Product table contining all product items.
@@ -120,3 +122,24 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+class ProductSpecificationValue(models.Model): #subset of product specifications
+    """
+    The Product Specification Value table holds each of the
+    products individual specification or bespoke features.
+    """
+
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    specification = models.ForeignKey(ProductSpecification, on_delete=models.RESTRICT)
+    value = models.CharField(
+        verbose_name=_("value"),
+        help_text=_("Product specification value (maximum of 255 words"),
+        max_length=255,
+    )
+
+    class Meta:
+        verbose_name = _("Product Specification Value")
+        verbose_name_plural = _("Product Specification Values")
+
+    def __str__(self):
+        return self.value
