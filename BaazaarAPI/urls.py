@@ -17,12 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, reverse
 from oauth2_provider.views import AuthorizationView
+from django.shortcuts import render
 # from djangorestframework_social_oauth2.views import AuthorizationView
 
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls, name='admin'),
+    path('accounts/', include('allauth.urls')),
     path('accounts/', include('allauth.urls')),
     path('user/', include('user.urls')),
     # path('social_auth/', include(('social_auth.urls'),
@@ -31,8 +33,9 @@ urlpatterns = [
     # path('social/', include('rest_social_auth.urls_jwt')),
     # path('auth/', include('rest_framework_social_oauth2.urls')),
     path('authorize/', AuthorizationView.as_view(), name='authorize'),
-    path('drf/', include('rest_framework.urls', namespace='drf')),
+    # path('drf/', include('rest_framework.urls', namespace='drf')),
+    
 ]
 
-# reverse('authorize')
+reverse('authorize')
 

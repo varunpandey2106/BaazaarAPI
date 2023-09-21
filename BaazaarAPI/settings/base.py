@@ -28,6 +28,16 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SITE_ID=1
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    # 'drf_social_oauth2.backends.DjangoOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.google.GoogleOAuth2',
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
 
 # Application definition
 
@@ -38,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites', 
     'rest_framework',
     'user',
     'phonenumber_field',
@@ -48,15 +59,17 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount', 
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
+
     # 'allauth.socialaccount.providers.twitter.client',
     'rest_framework.authtoken', 
     'social_django',
     'corsheaders',
     'rest_social_auth',
-    'drf_social_oauth2',
+    # 'drf_social_oauth2',
     'oauth2_provider',
     # 'social_auth',
-    'drf',
+
 
 
     
@@ -92,9 +105,9 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
 
                 'social_django.context_processors.backends',  # <-- Here
                 'social_django.context_processors.login_redirect', # <-- Her
@@ -103,20 +116,27 @@ TEMPLATES = [
     },
 ]
 
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': '47b8cd5c1b4d217f740c',
+            'secret': '8edb48020b6200230ede857b5e1affa494387a12',
+            'key': ''
+        }
+    }
+}
 
-AUTHENTICATION_BACKENDS = [
-    'drf_social_oauth2.backends.DjangoOAuth2',
-    'social_core.backends.facebook.FacebookOAuth2',
-    'social_core.backends.twitter.TwitterOAuth',
-    'social_core.backends.google.GoogleOAuth2',
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
-]
+
+
 
 REST_FRAMEWORK = {
    'DEFAULT_AUTHENTICATION_CLASSES': (
        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  
-       'drf_social_oauth2.authentication.SocialAuthentication',
+    #    'drf_social_oauth2.authentication.SocialAuthentication',
    )
 }
 CORS_ALLOWED_ORIGINS = [
