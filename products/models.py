@@ -48,6 +48,22 @@ class ProductType(models.Model): #subset of category
 
     def __str__(self):
         return self.name
+    
+class ProductSpecification(models.Model): #subset of product type
+    """
+    The Product Specification Table contains product
+    specifiction or features for the product types.
+    """
+
+    product_type = models.ForeignKey(ProductType, on_delete=models.RESTRICT)
+    name = models.CharField(verbose_name=_("Name"), help_text=_("Required"), max_length=255)
+
+    class Meta:
+        verbose_name = _("Product Specification")
+        verbose_name_plural = _("Product Specifications")
+
+    def __str__(self):
+        return self.name
 
 class Product(models.Model):
     """
