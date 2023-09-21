@@ -50,7 +50,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites', 
     'rest_framework',
+
+
+    ##apps
     'user',
+    'products',
+
+
+    ##config
     'phonenumber_field',
     'django_countries',
     'randompinfield',
@@ -60,15 +67,14 @@ INSTALLED_APPS = [
     'allauth.socialaccount', 
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',
-
-    # 'allauth.socialaccount.providers.twitter.client',
+    #'allauth.socialaccount.providers.twitter.client',
     'rest_framework.authtoken', 
     'social_django',
     'corsheaders',
     'rest_social_auth',
-    # 'drf_social_oauth2',
+    #'drf_social_oauth2',
     'oauth2_provider',
-    # 'social_auth',
+    #'social_auth',
 
 
 
