@@ -19,3 +19,10 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         exclude = "modified"
+
+class CreateProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        exclude = ("modified",)
+        # read_only_fields = ('id', 'seller', 'category', 'title', 'price', 'image', 'description', 'quantity', 'views',)
+        
