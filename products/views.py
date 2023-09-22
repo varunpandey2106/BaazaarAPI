@@ -1,16 +1,16 @@
 from django.shortcuts import render
-from .serializers import SerpyProductSerializer, CreateProductSerializer, ProductDocumentSerializer, ProductSerializer, CategoryListSerializer
+from .serializers import SerpyProductSerializer, CreateProductSerializer, ProductDocumentSerializer, ProductSerializer, CategoryListSerializer, ProductDetailSerializer, ProductViewsSerializer
 from rest_framework import filters, viewsets   
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Product, Category
+from .models import Product, Category, ProductViews
 from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
-    # CreateAPIView,
-    # DestroyAPIView,
+    CreateAPIView,
+    DestroyAPIView,
 )
-from .permissions import ModelViewSetsPermission
-from rest_framework.exceptions import NotAcceptable
+from .permissions import ModelViewSetsPermission, IsOwnerAuth
+from rest_framework.exceptions import NotAcceptable, PermissionDenied
 from django.utils.translation import gettext_lazy as _
 from django_elasticsearch_dsl_drf.filter_backends import (
     FilteringFilterBackend,
@@ -28,14 +28,24 @@ from rest_framework.response import Response
 from googletrans import Translator
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from rest_framework import permissions, status
+import logging 
+from rest_framework.views import APIView
+
 
 
 translator= Translator()
+logger = logging.getLogger(__name__)
+
 
 
 # Create your views here.
 
 #PRODUCT VIEWS
+
+
+
+
 class SerpyListProductAPIView(ListAPIView):
     serializer_class = SerpyProductSerializer
     filter_backends = (
@@ -195,3 +205,71 @@ class CategoryAPIView(RetrieveAPIView): #single object
             data[k] = translator.translate(str(v), dest="ar").text
 
         return Response(data)
+    
+class CreateProductAPIView(CreateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = CreateProductSerializer
+
+    def create(self, request, *args, **kwargs):
+        user = request.user
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(seller=user)
+        logger.info(
+            "product ( "
+            + str(serializer.data.get("title"))
+            + " ) created"
+            + " by ( "
+            + str(user.username)
+            + " )"
+        )
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class DestroyProductAPIView(DestroyAPIView):
+    permission_classes = [IsOwnerAuth]
+    serializer_class = ProductDetailSerializer
+    queryset = Product.objects.all()
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.is_deleted = True
+        instance.save()
+        return Response({"detail": "Product deleted"})
+    
+class ProductDetailView(APIView):
+    def get(self, request, uuid):
+        product = Product.objects.get(uuid=uuid)
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(",")[0]
+        else:
+            ip = request.META.get("REMOTE_ADDR")
+
+        if not ProductViews.objects.filter(product=product, ip=ip).exists():
+            ProductViews.objects.create(product=product, ip=ip)
+
+            product.views += 1
+            product.save()
+        serializer = ProductDetailSerializer(product, context={"request": request})
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, pk):
+        user = request.user
+        product = get_object_or_404(Product, pk=pk)
+        if product.user != user:
+            raise PermissionDenied("this product don't belong to you.")
+
+        serializer = ProductDetailSerializer(
+            product, data=request.data, context={"request": request}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    
+class ProductViewsAPIView(ListAPIView):
+    # permission_classes = [IsOwnerAuth]
+    serializer_class = ProductViewsSerializer
+    queryset = ProductViews.objects.all()
+
+    

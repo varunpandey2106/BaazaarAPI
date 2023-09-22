@@ -94,6 +94,9 @@ class ProductIndexSerializer(HaystackSerializer):
         # fields belong to the search index!
         fields = ("text", "title", "category",)
 
-
+class ProductViewsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductViews
+        exclude = "modified"
 
 
