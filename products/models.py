@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 
+
 # Create your models here.
 
 class Category(MPTTModel):
@@ -170,3 +171,18 @@ class ProductImage(models.Model): #subset of product
     class Meta:
         verbose_name = _("Product Image")
         verbose_name_plural = _("Product Images")
+
+# class TimeStampedModel(models.Model):
+#     created = models.DateTimeField(db_index=True, auto_now_add=True)
+#     modified = models.DateTimeField(auto_now=True)
+
+#     class Meta:
+#         abstract = True
+
+##timestamped model error
+# class ProductViews(TimeStampedModel):
+#     ip = models.CharField(max_length=250)
+#     product = models.ForeignKey(
+#         Product, related_name="product_views", on_delete=models.CASCADE
+#     )
+

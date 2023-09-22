@@ -84,3 +84,4 @@ python-jose==3.3.0
 wrapt==1.15.0
 django-js-asset==2.1.0 
 django-mptt==0.14.0
+serpy==0.3.1

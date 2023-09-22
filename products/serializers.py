@@ -1,12 +1,13 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Category, Product
+from .models import Category, Product, ProductViews
 from drf_extra_fields.fields import Base64ImageField
+import serpy 
 
 
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class CategoryListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         exclude = "modified"
@@ -21,6 +22,27 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         exclude = "modified"
+
+class SerpyProductSerializer(serpy.Serializer):
+    seller=serpy.StrField()
+    Category=serpy.StrField()
+    title=serpy.StrField()
+    price=serpy.StrField()
+    image=serpy.StrField()
+    description = serpy.StrField()
+    quantity = serpy.IntField()
+    views = serpy.IntField()
+
+class ProductMinSerializer(serializers.ModelSerializer): #list of products with minimal information
+    class Meta:
+        model=Product
+        field=["title"] #show only product titles
+
+    def to_representation(self, instance): #serializing an instance of the Product model to determine the format and content of the serialized data
+        data=super().to_representation(instance)
+        data= serializers.ModelSerializer.to_representation(self, instance)
+        return data
+
 
 class CreateProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,3 +61,11 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         exclude = "modified"
+
+class ProductViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= ProductViews
+        exclude="modified"
+        
+
+

@@ -9,3 +9,6 @@ admin.site.register(ProductType)
 admin.site.register(ProductSpecification)
 admin.site.register(ProductSpecificationValue)
 admin.site.register(ProductImage)
+
+
+
