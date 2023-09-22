@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     'django_elasticsearch_dsl',
     # Django REST framework Elasticsearch integration (this package)
     'django_elasticsearch_dsl_drf',
+    'haystack',
 
 
 
@@ -152,7 +153,19 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'localhost:9200',  # Replace with your Elasticsearch server details
+    },
+}
 
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch5_backend.Elasticsearch5SearchEngine',
+        'URL': 'http://localhost:9200/',  # Replace with your Elasticsearch server URL
+        'INDEX_NAME': 'my_index',  # Replace with your desired index name
+    },
+}
 
 
 REST_FRAMEWORK = {

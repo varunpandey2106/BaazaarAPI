@@ -172,17 +172,17 @@ class ProductImage(models.Model): #subset of product
         verbose_name = _("Product Image")
         verbose_name_plural = _("Product Images")
 
-# class TimeStampedModel(models.Model):
-#     created = models.DateTimeField(db_index=True, auto_now_add=True)
-#     modified = models.DateTimeField(auto_now=True)
+class TimeStampedModel(models.Model):
+    created = models.DateTimeField(db_index=True, auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
-#     class Meta:
-#         abstract = True
+    class Meta:
+        abstract = True
 
-##timestamped model error
-# class ProductViews(TimeStampedModel):
-#     ip = models.CharField(max_length=250)
-#     product = models.ForeignKey(
-#         Product, related_name="product_views", on_delete=models.CASCADE
-#     )
+#timestamped model error
+class ProductViews(TimeStampedModel):
+    ip = models.CharField(max_length=250)
+    product = models.ForeignKey(
+        Product, related_name="product_views", on_delete=models.CASCADE
+    )
 
