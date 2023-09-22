@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     ##apps
     'user',
     'products',
+    'orders',
 
 
     ##config

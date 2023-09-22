@@ -34,8 +34,10 @@ urlpatterns = [
     # path('auth/', include('rest_framework_social_oauth2.urls')),
     path('authorize/', AuthorizationView.as_view(), name='authorize'),
     # path('drf/', include('rest_framework.urls', namespace='drf')),
-    path('products/', include('products.urls'))
+    path('products/', include('products.urls')),
+    path('orders/', include('orders.urls'))
     
+
     
 ]
 
