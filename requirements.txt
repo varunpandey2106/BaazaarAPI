@@ -93,3 +93,4 @@ elasticsearch-dsl==7.4.1
 packaging-23.1
 django-haystack==3.2.1 
 drf-haystack==1.8.12
+django-filter==23.3

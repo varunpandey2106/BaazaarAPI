@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     #'drf_social_oauth2',
     'oauth2_provider',
     #'social_auth',
+    'django_filters',
 
     # Django Elasticsearch integration
     'django_elasticsearch_dsl',
