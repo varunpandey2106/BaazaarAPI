@@ -14,6 +14,9 @@ app_name="products"
 urlpatterns = [
     path("serpy/product/", views.SerpyListProductAPIView.as_view()),
     path("list/product/", views.ListProductAPIView.as_view()),
+    path("category/", views.CategoryListAPIView.as_view()),
+    path("category/<int:pk>/", views.CategoryAPIView.as_view()),
+    
 
 
 ]

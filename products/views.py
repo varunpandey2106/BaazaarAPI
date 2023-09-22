@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from .serializers import SerpyProductSerializer, CreateProductSerializer, ProductDocumentSerializer, ProductSerializer
+from .serializers import SerpyProductSerializer, CreateProductSerializer, ProductDocumentSerializer, ProductSerializer, CategoryListSerializer
 from rest_framework import filters, viewsets   
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Product, Category
 from rest_framework.generics import (
     ListAPIView,
-    # RetrieveAPIView,
+    RetrieveAPIView,
     # CreateAPIView,
     # DestroyAPIView,
 )
@@ -25,12 +25,14 @@ from .decorators import time_calculator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from rest_framework.response import Response
+from googletrans import Translator
 
+translator= Translator()
 
 
 # Create your views here.
 
-
+#PRODUCT VIEWS
 class SerpyListProductAPIView(ListAPIView):
     serializer_class = SerpyProductSerializer
     filter_backends = (
@@ -126,3 +128,40 @@ class ProductDocumentView(DocumentViewSet):
     ordering_fields = {"created": "created"}
     # ordering = ('-created',)
     queryset = Product.objects.all()
+
+##CATGEORY VIEWS
+class CategoryListAPIView(ListAPIView):
+    # permission_classes = [permissions.IsAuthenticated]
+    serializer_class = CategoryListSerializer
+    filter_backends = (
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    )
+    search_fields = ("name",)
+    ordering_fields = ("created",)
+    filter_fields = ("created",)
+    # queryset = Category.objects.all()
+
+    @time_calculator
+    def time(self):
+        return 0
+
+    def get_queryset(self):
+        queryset = Category.objects.all()
+        self.time()
+        return queryset
+
+class CategoryAPIView(RetrieveAPIView):
+    # permission_classes = [permissions.IsAuthenticated]
+    serializer_class = CategoryListSerializer
+    queryset = Category.objects.all()
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        data = {}
+        for k, v in serializer.data.items():
+            data[k] = translator.translate(str(v), dest="ar").text
+
+        return Response(data)
