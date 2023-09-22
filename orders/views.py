@@ -48,3 +48,15 @@ class OrderView(APIView):
         # TODO Payment Integration here.
         # TODO send Email to seller and buyer
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+##PAYMENT INTEGRATION IMPLEMENT HERE
+def Payment(request):
+    return render(request, "payment/payment.html", {})
+
+def payment_confirmation(data):
+    Order.objects.filter(order_key=data).update(billing_status=True)
+
+def user_orders(request):
+    user_id = request.user.id
+    orders = Order.objects.filter(user_id=user_id).filter(billing_status=True)
+    return orders
