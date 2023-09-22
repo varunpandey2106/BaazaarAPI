@@ -9,3 +9,12 @@ class OrderSerializer(serializers.ModelSerializer):
         exclude = "modified"
 
 
+class OrderMiniSerializer(serializers.ModelSerializer):
+    address = AddressSerializer(required=False)
+    buyer = UserMiniSerializer(required=False)
+
+    class Meta:
+        model = Order
+        exclude = "modified"
+
+
