@@ -305,7 +305,7 @@ class VerifyEmailSerializer(serializers.Serializer):
             raise serializers.ValidationError("Key is required.")
         return value
 
-class UserMinSerializer(serializers.ModelSerializer):
+class UserMiniSerializer(serializers.ModelSerializer):
     profile_picture= serializers.ImageField(source="profile.profile_picture")
     gender= serializers.CharField(source="profile.gender")
     phone_number= PhoneNumberField(source="profile.phone.number")
