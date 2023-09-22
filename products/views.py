@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .serializers import SerpyProductSerializer, CreateProductSerializer, ProductDocumentSerializer
+from .serializers import SerpyProductSerializer, CreateProductSerializer, ProductDocumentSerializer, ProductSerializer
 from rest_framework import filters, viewsets   
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Product, Category
@@ -20,6 +20,13 @@ from django_elasticsearch_dsl_drf.filter_backends import (
 )
 from .documents import ProductDocument
 from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
+from django.utils.decorators import method_decorator
+from .decorators import time_calculator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
+from rest_framework.response import Response
+
+
 
 # Create your views here.
 
@@ -61,6 +68,47 @@ class ListProductView(viewsets.ModelViewSet):
         if User.objects.get(username="tomas33") != self.get_object().seller:
             raise NotAcceptable(_("you don't own product"))
         return super(ListProductView, self).update(request, *args, **kwargs)
+
+
+class ListProductAPIView(ListAPIView):
+    serializer_class = ProductSerializer
+    filter_backends = (
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    )
+    search_fields = ("title",)
+    ordering_fields = ("created",)
+    filter_fields = ("views",)
+    queryset = Product.objects.all()
+
+    # def get_queryset(self):
+    #     import cProfile
+    #     from django.contrib.auth.models import User
+    #     u = User.objects.get(id=5)
+    #     p = Product.objects.create(seller=u, category=Category.objects.get(id=1), title='test', price=20, description='dsfdsfdsf', quantity=10)
+    #     cProfile.runctx('for i in range(5000): ProductSerializer(p).data', globals(), locals(), sort='tottime')
+    #     queryset = Product.objects.all()
+    #     return queryset
+
+    @time_calculator
+    def time(self):
+        return 0
+
+    # Cache requested url for each user for 2 hours
+    @method_decorator(cache_page(60 * 60 * 2))
+    @method_decorator(vary_on_cookie)
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        self.time()
+        return Response(serializer.data)
 
 
 class ProductDocumentView(DocumentViewSet):

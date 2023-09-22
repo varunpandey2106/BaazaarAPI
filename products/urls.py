@@ -12,5 +12,8 @@ router.register(r"product-search", viewsets.ProductSearchView)
 app_name="products"
 
 urlpatterns = [
-    path("serpy/product/", views.SerpyListProductAPIView.as_view())
+    path("serpy/product/", views.SerpyListProductAPIView.as_view()),
+    path("list/product/", views.ListProductAPIView.as_view()),
+
+
 ]
