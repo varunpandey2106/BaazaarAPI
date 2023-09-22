@@ -22,3 +22,11 @@ class OrderItemSerializer(serializers.ModelSerializer):
         model = OrderItem
         exclude = "modified"
 
+
+class OrderItemMiniSerializer(serializers.ModelSerializer):
+    order = OrderMiniSerializer(required=False, read_only=True)
+    product = ProductDetailSerializer(required=False, read_only=True)
+
+    class Meta:
+        model = OrderItem
+        exclude = "modified"
