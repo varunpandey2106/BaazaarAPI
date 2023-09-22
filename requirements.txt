@@ -85,3 +85,11 @@ wrapt==1.15.0
 django-js-asset==2.1.0 
 django-mptt==0.14.0
 serpy==0.3.1
+django-elasticsearch-dsl==7.3 
+django-elasticsearch-dsl-drf==0.22.5 
+django-nine==0.2.7 
+elasticsearch==7.17.9 
+elasticsearch-dsl==7.4.1 
+packaging-23.1
+django-haystack==3.2.1 
+drf-haystack==1.8.12

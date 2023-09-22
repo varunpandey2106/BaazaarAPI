@@ -3,6 +3,10 @@ from django.contrib.auth.models import User
 from .models import Category, Product, ProductViews
 from drf_extra_fields.fields import Base64ImageField
 import serpy 
+from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
+from drf_haystack.serializers import HaystackSerializer
+from .documents import ProductDocument
+from .search_indexes import ProductIndex
 
 
 
@@ -66,6 +70,29 @@ class ProductViewSerializer(serializers.ModelSerializer):
     class Meta:
         model= ProductViews
         exclude="modified"
-        
+
+class ProductDocumentSerializer(DocumentSerializer):
+    seller = serializers.SlugRelatedField(slug_field="username", queryset=User.objects)
+    category = serializers.SerializerMethodField()
+
+    def get_category(self, obj):
+        return obj.category.name
+
+    class Meta(object):
+        # model = Product
+        document = ProductDocument
+        exclude = "modified"
+
+# class ProductIndexSerializer(HaystackSerializer):
+#     class Meta:
+#         # The `index_classes` attribute is a list of which search indexes
+#         # we want to include in the search.
+#         index_classes = [ProductIndex]
+
+#         # The `fields` contains all the fields we want to include.
+#         # NOTE: Make sure you don't confuse these with model attributes. These
+#         # fields belong to the search index!
+#         fields = ("text", "title", "category",)
+
 
 
