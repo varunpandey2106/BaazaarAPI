@@ -26,6 +26,9 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from rest_framework.response import Response
 from googletrans import Translator
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+
 
 translator= Translator()
 
@@ -111,6 +114,33 @@ class ListProductAPIView(ListAPIView):
         serializer = self.get_serializer(queryset, many=True)
         self.time()
         return Response(serializer.data)
+    
+class ListUserProductAPIView(ListAPIView):
+    serializer_class = ProductSerializer
+    filter_backends = (
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    )
+    search_fields = (
+        "title",
+        "user__username",
+    )
+    ordering_fields = ("created",)
+    filter_fields = ("views",)
+
+    def get_queryset(self):
+        # user = self.request.user
+        # queryset = Product.objects.filter(user=user)
+        # return queryset
+         # Get the username from the URL parameters
+        username = self.kwargs.get('username')
+        
+        # Get the user object by username (you can also use other methods to identify the user)
+        user = get_object_or_404(User, username=username)
+
+        # Filter products that are in the wishlist of the specified user
+        return Product.objects.filter(users_wishlist=user)
 
 
 class ProductDocumentView(DocumentViewSet):
@@ -130,7 +160,7 @@ class ProductDocumentView(DocumentViewSet):
     queryset = Product.objects.all()
 
 ##CATGEORY VIEWS
-class CategoryListAPIView(ListAPIView):
+class CategoryListAPIView(ListAPIView): #multiple objects
     # permission_classes = [permissions.IsAuthenticated]
     serializer_class = CategoryListSerializer
     filter_backends = (
@@ -152,7 +182,7 @@ class CategoryListAPIView(ListAPIView):
         self.time()
         return queryset
 
-class CategoryAPIView(RetrieveAPIView):
+class CategoryAPIView(RetrieveAPIView): #single object
     # permission_classes = [permissions.IsAuthenticated]
     serializer_class = CategoryListSerializer
     queryset = Category.objects.all()
