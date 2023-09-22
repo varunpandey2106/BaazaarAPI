@@ -17,4 +17,8 @@ class OrderMiniSerializer(serializers.ModelSerializer):
         model = Order
         exclude = "modified"
 
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        exclude = "modified"
 
