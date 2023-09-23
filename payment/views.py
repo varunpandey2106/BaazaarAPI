@@ -4,7 +4,7 @@ from .serializers import PaymentSerializer, CheckoutSerializer
 from .permissions import IsPaymentByUser, IsPaymentPending, Or
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import RetrieveUpdateAPIView
-from orders.permissions import IsOrderByBuyerOrAdmin, Is
+from orders.permissions import IsOrderByBuyerOrAdmin, IsOrderPending
 
 
 # Create your views here.
