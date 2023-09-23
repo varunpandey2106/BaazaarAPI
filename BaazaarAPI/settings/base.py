@@ -263,6 +263,10 @@ LOGIN_REDIRECT_URL = '/'
 # LOGIN_REDIRECT_URL = 'profile/1/'  # Set this to your desired post-login redirect URL.
 
 
+#STRIPE CONFIG
+STRIPE_SECRET_KEY = 'sk_test_51NtTGFSHsEba2yrqHZu5ab6jQZciMF2VHzJ7GO6wKVbOOocC9a3OinSpMBenPviye1Y27nYDfdaBTNC4J308TfGG00o2BvYLnB'
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51NtTGFSHsEba2yrqsGRzIwMFYA3mON7uKtRx2aypPFUnVWEOuzH9REfwM3T6fqWVXxUGNwYnweEpviBs2wmo6a5b00JUOq9nxg'
+
 
 
 # Static files (CSS, JavaScript, Images)
