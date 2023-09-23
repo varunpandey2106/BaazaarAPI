@@ -13,3 +13,16 @@ class IsOrderByBuyerOrAdmin(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return obj.buyer == request.user or request.user.is_staff
+
+class IsOrderItemByBuyerOrAdmin(BasePermission):
+    """
+    Check if order item is owned by appropriate buyer or admin
+    """
+
+    def has_permission(self, request, view):
+        order_id = view.kwargs.get('order_id')
+        order = get_object_or_404(Order, id=order_id)
+        return order.buyer == request.user or request.user.is_staff
+
+    def has_object_permission(self, request, view, obj):
+        return obj.order.buyer == request.user or request.user.is_staff
