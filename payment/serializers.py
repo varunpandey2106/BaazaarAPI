@@ -49,7 +49,7 @@ class CheckoutSerializer(serializers.ModelSerializer):
         order_billing_address = None
         order_payment = None
 
-        shipping_address = validated_data['shipping_address']
+        shipping_address = validated_data['shipping_address'] #check if sjipping address is set
 
         # Shipping address for an order is not set
         if not instance.shipping_address:
@@ -62,7 +62,7 @@ class CheckoutSerializer(serializers.ModelSerializer):
 
             order_shipping_address = address.first()
 
-        billing_address = validated_data['billing_address']
+        billing_address = validated_data['billing_address'] #check if billing address is set
 
         # Billing address is not set for an order
         if not instance.billing_address:
@@ -76,7 +76,7 @@ class CheckoutSerializer(serializers.ModelSerializer):
 
             order_billing_address = address.first()
 
-        payment = validated_data['payment']
+        payment = validated_data['payment'] #check if payment option is set
 
         # Payment option is not set for an order
         if not instance.payment:
