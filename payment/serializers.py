@@ -2,7 +2,7 @@ from rest_framework import serializers
 from orders.models import Order, OrderItem
 from payment.models import Payment
 from user.models import Address
-
+from user.serializers import ShippingAddressSerializer, BillingAddressSerializer
 
 
 class PaymentSerializer(serializers.ModelSerializer):
@@ -97,3 +97,4 @@ class CheckoutSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
