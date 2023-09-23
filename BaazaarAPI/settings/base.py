@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'user',
     'products',
     'orders',
-    'payment'
+    'payment',
 
 
 
@@ -85,6 +85,7 @@ INSTALLED_APPS = [
     # Django REST framework Elasticsearch integration (this package)
     'django_elasticsearch_dsl_drf',
     'haystack',
+
 
 
 
