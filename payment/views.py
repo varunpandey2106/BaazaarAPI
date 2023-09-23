@@ -4,7 +4,7 @@ from .serializers import PaymentSerializer, CheckoutSerializer
 from .permissions import IsPaymentByUser, IsPaymentPending, Or
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import RetrieveUpdateAPIView
-from orders.permissions import IsOrderByBuyerOrAdmin 
+from orders.permissions import IsOrderByBuyerOrAdmin, Is
 
 
 # Create your views here.
@@ -38,6 +38,6 @@ class CheckoutAPIView(RetrieveUpdateAPIView):
 
     def get_permissions(self):
         if self.request.method in ('PUT', 'PATCH'):
-            self.permission_classes += [IsOrderPendingWhenCheckout]
+            self.permission_classes += [IsOrderPending]
 
         return super().get_permissions()
