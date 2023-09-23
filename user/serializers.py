@@ -15,6 +15,7 @@ from .register import register_social_user
 from rest_framework.exceptions import AuthenticationFailed
 import os 
 from .Backend import google 
+from django_countries.serializers import CountryFieldMixin
 
 
 
@@ -409,6 +410,26 @@ class GoogleSocialAuthSerializer(serializers.Serializer):
 
         return register_social_user(
             provider=provider, user_id=user_id, email=email, name=name)
+    
+
+class ShippingAddressSerializer(CountryFieldMixin, serializers.ModelSerializer):
+    """
+    Serializer class to seralize address of type shipping
+
+    For shipping address, automatically set address type to shipping
+    """
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Address
+        fields = '__all__'
+        read_only_fields = ('address_type', )
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['address_type'] = 'S'
+
+        return representation
 
 
 
