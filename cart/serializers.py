@@ -18,3 +18,10 @@ class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
         fields = ["cart", "product", "quantity"]
+
+class CartItemMiniSerializer(serializers.ModelSerializer):
+    product = CartProductSerializer(required=False)
+
+    class Meta:
+        model = CartItem
+        fields = ["product", "quantity"]
