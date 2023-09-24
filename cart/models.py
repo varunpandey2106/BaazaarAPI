@@ -10,7 +10,14 @@ from products.models import Product
 
 User= get_user_model()
 
-class Cart:
+class TimeStampedModel(models.Model):
+    created_at= models.DateTimeField(auto_now_add=True) #profile create time
+    updated_at= models.DateTimeField(auto_now_add=True) #profile update time
+
+    class Meta:
+        abstract= True
+
+class Cart(TimeStampedModel):
     user = models.OneToOneField(
         User, related_name="user_cart", on_delete=models.CASCADE
     )
@@ -24,18 +31,8 @@ def create_user_cart(sender, created, instance, *args, **kwargs):
         Cart.objects.create(user=instance)
 
 
-class TimeStampedModel(models.Model):
-    created_at= models.DateTimeField(auto_now_add=True) #profile create time
-    updated_at= models.DateTimeField(auto_now_add=True) #profile update time
 
-    class Meta:
-        abstract= True
-
-
-class CartItem:
-    class CartItem(TimeStampedModel):
-        cart = models.ForeignKey(Cart, related_name="cart_item", on_delete=models.CASCADE)
-        product = models.ForeignKey(
-        Product, related_name="cart_product", on_delete=models.CASCADE
-    )
+class CartItem(TimeStampedModel):
+    cart = models.ForeignKey(Cart, related_name="cart_item", on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name="cart_product", on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
