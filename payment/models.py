@@ -23,7 +23,7 @@ class Payment(models.Model):
     status = models.CharField(
         max_length=1, choices=STATUS_CHOICES, default=PENDING)
     payment_option = models.CharField(max_length=1, choices=PAYMENT_CHOICES)
-    order = models.OneToOneField(
+    order = models.ForeignKey(
         Order, related_name='payment', on_delete=models.CASCADE)
 
     created_at = models.DateTimeField(auto_now_add=True)

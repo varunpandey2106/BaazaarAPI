@@ -15,7 +15,7 @@ class Order(models.Model):
     ORDER_STATUS=((PENDING_ORDER,"pending"),(COMPLETED_ORDER, "completed"))
 
     
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="order_user")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="orders")
     full_name = models.CharField(max_length=50)
     email = models.EmailField(max_length=254, blank=True)
     shipping_address = models.ForeignKey(

@@ -175,8 +175,13 @@ HAYSTACK_CONNECTIONS = {
 REST_FRAMEWORK = {
    'DEFAULT_AUTHENTICATION_CLASSES': (
        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  
+    #    'rest_framework.authentication.TokenAuthentication',
+       'rest_framework.authentication.SessionAuthentication',
     #    'drf_social_oauth2.authentication.SocialAuthentication',
-   )
+   ),
+   'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAdminUser'
+   ),
 }
 CORS_ALLOWED_ORIGINS = [
    "http://localhost:8000",
@@ -264,8 +269,9 @@ LOGIN_REDIRECT_URL = '/'
 
 
 #STRIPE CONFIG
-STRIPE_SECRET_KEY = 'sk_test_51NtTGFSHsEba2yrqHZu5ab6jQZciMF2VHzJ7GO6wKVbOOocC9a3OinSpMBenPviye1Y27nYDfdaBTNC4J308TfGG00o2BvYLnB'
+STRIPE_SECRET_KEY = "sk_test_51NtTGFSHsEba2yrqHZu5ab6jQZciMF2VHzJ7GO6wKVbOOocC9a3OinSpMBenPviye1Y27nYDfdaBTNC4J308TfGG00o2BvYLnB"
 STRIPE_PUBLISHABLE_KEY = 'pk_test_51NtTGFSHsEba2yrqsGRzIwMFYA3mON7uKtRx2aypPFUnVWEOuzH9REfwM3T6fqWVXxUGNwYnweEpviBs2wmo6a5b00JUOq9nxg'
+STRIPE_SECRET_WEBHOOK=""
 
 
 
