@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from .serializers import CartItemSerializer
+from .serializers import CartItemSerializer, CartItemUpdateSerializer
 from .models import Cart, CartItem
 from products.models import Product
 from rest_framework import permissions, status
@@ -55,3 +55,56 @@ class CartItemAPIView(ListCreateAPIView):
         # )
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class CartItemView(RetrieveUpdateDestroyAPIView):
+    serializer_class = CartItemSerializer
+    # method_serializer_classes = {
+    #     ('PUT',): CartItemUpdateSerializer
+    # }
+    queryset = CartItem.objects.all()
+
+    def retrieve(self, request, *args, **kwargs):
+        cart_item = self.get_object()
+        if cart_item.cart.user != request.user:
+            raise PermissionDenied("Sorry this cart not belong to you")
+        serializer = self.get_serializer(cart_item)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        cart_item = self.get_object()
+        print(request.data)
+        product = get_object_or_404(Product, pk=request.data["product"])
+
+        if cart_item.cart.user != request.user:
+            raise PermissionDenied("Sorry this cart not belong to you")
+
+        try:
+            quantity = int(request.data["quantity"])
+        except Exception as e:
+            raise ValidationError("Please, input vaild quantity")
+
+        if quantity > product.quantity:
+            raise NotAcceptable("Your order quantity more than the seller have")
+
+        serializer = CartItemUpdateSerializer(cart_item, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        cart_item = self.get_object()
+        if cart_item.cart.user != request.user:
+            raise PermissionDenied("Sorry this cart not belong to you")
+        cart_item.delete()
+        # push_notifications(
+        #     cart_item.cart.user,
+        #     "deleted cart product",
+        #     "you have been deleted this product: "
+        #     + cart_item.product.title
+        #     + " from your cart",
+        # )
+
+        return Response(
+            {"detail": _("your item has been deleted.")},
+            status=status.HTTP_204_NO_CONTENT,
+        )
