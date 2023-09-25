@@ -8,6 +8,7 @@ from rest_framework import permissions, status
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import NotAcceptable, ValidationError, PermissionDenied
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 # from notifications.utils import push_notification
 
 
@@ -15,7 +16,9 @@ from rest_framework.response import Response
 
 
 class CartItemAPIView(ListCreateAPIView):
+    lookup_field = 'pk'
     serializer_class = CartItemSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user

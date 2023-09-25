@@ -181,7 +181,7 @@ REST_FRAMEWORK = {
     #    'drf_social_oauth2.authentication.SocialAuthentication',
    ),
    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAdminUser'
+        'rest_framework.permissions.IsAuthenticated', 
    ),
 }
 CORS_ALLOWED_ORIGINS = [

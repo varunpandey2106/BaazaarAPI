@@ -36,7 +36,8 @@ urlpatterns = [
     # path('drf/', include('rest_framework.urls', namespace='drf')),
     path('products/', include('products.urls')),
     path('orders/', include('orders.urls')),
-    path('payment/', include('payment.urls'))
+    path('payment/', include('payment.urls')),
+    path('cart/', include('cart.urls') )
 
 
     
