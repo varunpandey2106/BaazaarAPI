@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView, RetrieveDestroyAPIView
+from rest_framework.views import APIView
 from rest_framework import permissions, status
 from .serializers import NotificationMiniSerializer
 from .models import Notification
@@ -45,7 +46,21 @@ class NotificationAPIView(RetrieveDestroyAPIView): #retrieve and delete a single
             {"detail": _("this notification is deleted successfuly.")},
             status=status.HTTP_204_NO_CONTENT,
         )
-    
+
+class MarkedAllAsReadNotificationView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request): #mark all unread as read
+        user = request.user
+        notifications = Notification.objects.filter(
+            user=user, status=Notification.MARKED_UNREAD
+        )
+        for notification in notifications:
+            if notification.user != user:
+                raise PermissionDenied("this notifications don't belong to you.")
+            notification.status = Notification.MARKED_READ
+            notification.save()
+        return Response("No new notifications.", status=status.HTTP_200_OK)
 
     
 
