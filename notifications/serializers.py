@@ -15,3 +15,12 @@ class FCMDeviceSerializer(serializers.ModelSerializer):
             "date_created",
         ]
 
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = ["title", "body"]
+
+class NotificationMiniSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = ["id", "user", "title", "body", "status"]
