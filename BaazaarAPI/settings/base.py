@@ -87,7 +87,8 @@ INSTALLED_APPS = [
     # Django REST framework Elasticsearch integration (this package)
     'django_elasticsearch_dsl_drf',
     'haystack',
-    'fcm_django'
+    'fcm_django',
+    'django_twilio'
 
 
 
@@ -236,9 +237,9 @@ USE_TZ = True
 
 
 #TWILIO SETTINGS
-TWILIO_ACCOUNT_SID=config('TWILIO_ACCOUNT_SID')
-TWILIO_AUTH_TOKEN= config('TWILIO_TOKEN')
-TWILIO_FROM_NUMBER=config('TWILIO_FROM')
+TWILIO_ACCOUNT_SID="AC4a51dde40cbbe0cb0d4d648f7372f003"
+TWILIO_AUTH_TOKEN= "744e8a1392f370bf9bfe49a791b2b17f"
+# TWILIO_FROM_NUMBER=config('TWILIO_FROM')
 
 #EMAIL SETTINGS
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
