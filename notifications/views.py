@@ -23,6 +23,7 @@ class NotificationListView(ListAPIView):  #get list of all notifs of user
     
 
 class NotificationAPIView(RetrieveDestroyAPIView): #retrieve and delete a single notif
+    lookup_field = 'pk'
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = NotificationMiniSerializer
     queryset = Notification.objects.all()

@@ -87,6 +87,7 @@ INSTALLED_APPS = [
     # Django REST framework Elasticsearch integration (this package)
     'django_elasticsearch_dsl_drf',
     'haystack',
+    'fcm_django'
 
 
 
