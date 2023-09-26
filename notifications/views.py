@@ -2,11 +2,12 @@ from django.shortcuts import render
 from rest_framework.generics import ListAPIView, RetrieveDestroyAPIView
 from rest_framework.views import APIView
 from rest_framework import permissions, status
-from .serializers import NotificationMiniSerializer
+from .serializers import NotificationMiniSerializer, FCMDeviceSerializer
 from .models import Notification
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, NotAcceptable
 from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
+from fcm_django.models import FCMDevice
 
 # Create your views here.
 class NotificationListView(ListAPIView):  #get list of all notifs of user
@@ -63,4 +64,20 @@ class MarkedAllAsReadNotificationView(APIView):
         return Response("No new notifications.", status=status.HTTP_200_OK)
 
     
+class CreateDeviceAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(
+        self, request,
+    ):
+        user = request.user
+        registration_id = request.data.get("registration_id", None)
+        type = request.data.get("type", None)
+        device = FCMDevice.objects.filter(registration_id=registration_id, type=type)
+        if device.count() > 0:
+            raise NotAcceptable("This Device is Founded.")
+        serializer = FCMDeviceSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
