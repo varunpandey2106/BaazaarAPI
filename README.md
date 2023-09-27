@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Baazaar API is an online retail backend project being built that utilises Django and Django-Rest Framework
+Baazaar API is an online retail backend project  that utilises Django and Django-Rest Framework
 
 ## Features:
 
@@ -13,34 +13,21 @@ Baazaar API is an online retail backend project being built that utilises Django
 - **Shopping Cart Management**
 - **Notifications**
 - **Search and discovery**
-- **Recommendation and personalization**
-- **Location services**
 - **Payment Integration**
 - **Third party Integrations**
-- **Scalability and Deployment**
-- **Documentation**
 
 ## Tech Stack
 
-
 - **Django**
 - **Django REST framework**
-- **GraphQL**
 - **Celery** 
 - **Redis** 
 - **PostgreSQL** 
 - **OAuth2**
 - **Stripe API**
-- **Google Maps API** 
-- **Shopify API**
-- **Amazon Personalize**
 - **Postman**
 - **Swagger**
 - **Docker**
-- **Kubernetes**
-- **AWS EC2**
-- **NGINX**
-- **CI/CD**
 
 
 ## Installation
@@ -60,13 +47,9 @@ pip install -r requirements.txt
 ```
 - Configure settings
 ```bash
-To run this project, you will need to add the following environment variables to your .env file
 
-`GOOGLEMAPS_API_KEY`:
 
-`STRIPE_KEY`:
 
-'SHOPIFY_API_KEY':
 ```
 - Run Migrations and Run Server
 ```bash
@@ -99,10 +82,6 @@ To run tests, run the following command
 
 
 
-## Demo
-
-
-
 
 ## Deployment
 
@@ -115,6 +94,11 @@ To deploy this project run
 ## Documentation
 
 [Swagger Documentation](https://linktodocumentation)
+
+## Future Work
+
+- **Recommendation and personalization**
+- **Location services**
 
 ## Contributing
 
