@@ -15,6 +15,7 @@ Baazaar API is an online retail backend project  that utilises Django and Django
 - **Search and discovery**
 - **Payment Integration**
 - **Third party Integrations**
+- **ElasticSearch**
 
 ## Future Work:
 
