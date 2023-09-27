@@ -53,8 +53,6 @@ cd BazaarAPI
 virtualenv BazaarAPI
 pip install -r requirements.txt
 ```
-- Configure settings
-```bash
 
 
 
