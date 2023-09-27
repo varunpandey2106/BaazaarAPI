@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites', 
     'rest_framework',
+    'rest_framework.authtoken',
+
 
 
     ##apps
@@ -73,7 +75,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',
     #'allauth.socialaccount.providers.twitter.client',
-    'rest_framework.authtoken', 
     'social_django',
     'corsheaders',
     'rest_social_auth',
@@ -198,8 +199,16 @@ CORS_ALLOWED_ORIGINS = [
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        # 'NAME': 'DEMO_TEST',
+        'NAME': 'DEO_TEST',
+        # 'USER': 'postgres',
+        'USER': 'varunpandey',
+        'PASSWORD': 'boombamboom',
+        # 'HOST': 'localhost',
+        'HOST': 'database-1.ctnrt8ucgs1p.eu-north-1.rds.amazonaws.com',
+        'PORT': '5432'
+
     }
 }
 
