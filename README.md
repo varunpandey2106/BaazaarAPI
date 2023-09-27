@@ -74,26 +74,6 @@ python manage.py runserver
 
 
 
-
-## Running Tests
-
-To run tests, run the following command
-
-```bash
-  python manage.py test
-```
-
-
-## Endpoints
-
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
-
-
-## Documentation
-
-[Swagger Documentation](https://linktodocumentation)
-
-
 ## Contributing
 
 Contributions are always welcome!
