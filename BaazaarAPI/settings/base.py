@@ -180,6 +180,7 @@ HAYSTACK_CONNECTIONS = {
 REST_FRAMEWORK = {
    'DEFAULT_AUTHENTICATION_CLASSES': (
        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     #    'rest_framework.authentication.TokenAuthentication',
        'rest_framework.authentication.SessionAuthentication',
     #    'drf_social_oauth2.authentication.SocialAuthentication',
@@ -192,6 +193,8 @@ CORS_ALLOWED_ORIGINS = [
    "http://localhost:8000",
    "http://127.0.0.1:8000"
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True  # This allows all origins, you can specify specific origins if needed.
 
 
 # Database
