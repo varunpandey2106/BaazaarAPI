@@ -16,6 +16,11 @@ Baazaar API is an online retail backend project  that utilises Django and Django
 - **Payment Integration**
 - **Third party Integrations**
 
+## Future Work:
+
+- **Store locator**
+- **Recommendation Engine**
+
 ## Tech Stack
 
 - **Django**
@@ -26,6 +31,8 @@ Baazaar API is an online retail backend project  that utilises Django and Django
 -  **AWS RDS**
 - **OAuth2**
 - **Stripe API**
+- **Twillio API**
+- **Gmail API**
 - **Postman**
 - **Swagger**
 - **Docker**
@@ -82,24 +89,10 @@ To run tests, run the following command
 ![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
 
 
-
-
-## Deployment
-
-To deploy this project run
-
-```bash
-  
-```
-
 ## Documentation
 
 [Swagger Documentation](https://linktodocumentation)
 
-## Future Work
-
-- **Recommendation and personalization**
-- **Location services**
 
 ## Contributing
 
