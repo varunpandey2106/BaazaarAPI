@@ -40,25 +40,23 @@ Baazaar API is an online retail backend project  that utilises Django and Django
 
 ## Installation
 
-- Getting Started
-
 Clone the repository and navigate to the project directory:
 ```bash
+
 git clone https://github.com/varunpandey2106/BazaarAPI.git
 cd BazaarAPI
 ```
 
 - Setup Virtual Environment and install dependencies 
 ```bash
+
 virtualenv BazaarAPI
 pip install -r requirements.txt
 ```
 
-
-
-```
 - Run Migrations and Run Server
 ```bash
+
 python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver
