@@ -200,18 +200,25 @@ CORS_ALLOW_ALL_ORIGINS = True  # This allows all origins, you can specify specif
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         # 'NAME': 'DEMO_TEST',
+#         'NAME': 'DEO_TEST',
+#         # 'USER': 'postgres',
+#         'USER': 'varunpandey',
+#         'PASSWORD': 'boombamboom',
+#         # 'HOST': 'localhost',
+#         'HOST': 'database-1.ctnrt8ucgs1p.eu-north-1.rds.amazonaws.com',
+#         'PORT': '5432'
+
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        # 'NAME': 'DEMO_TEST',
-        'NAME': 'DEO_TEST',
-        # 'USER': 'postgres',
-        'USER': 'varunpandey',
-        'PASSWORD': 'boombamboom',
-        # 'HOST': 'localhost',
-        'HOST': 'database-1.ctnrt8ucgs1p.eu-north-1.rds.amazonaws.com',
-        'PORT': '5432'
-
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

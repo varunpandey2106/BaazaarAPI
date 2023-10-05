@@ -15,6 +15,12 @@ class CartProductSerializer(serializers.ModelSerializer): #serialize the Product
 
 class CartItemSerializer(serializers.ModelSerializer): #serialize the CartItem model.
     # product = CartProductSerializer(required=False)
+
+    cart_item_id=serializers.SerializerMethodField()
+
+    def get_cart_id(self, obj):
+        return obj.cart.id
+    
     class Meta:
         model = CartItem
         fields = ["cart", "product", "quantity"]
@@ -30,3 +36,17 @@ class CartItemUpdateSerializer(serializers.ModelSerializer): # updating CartItem
     class Meta:
         model = CartItem
         fields = ["product", "quantity"]
+
+
+#serializer to add items to cart
+
+class CartAddItemSerializer(serializers.ModelSerializer):
+    cart_id= serializers.IntegerField()
+    product_id= serializers.IntegerField()
+    quantity=serializers.IntegerField(min_value=1)
+
+#serializer to remove items from cart
+
+class CartRemoveItemSerializer(serializers.ModelSerializer):
+    cart_id= serializers.IntegerField()
+    cart_item_id= serializers.IntegerField()
