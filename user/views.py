@@ -66,6 +66,8 @@ from rest_framework.authtoken.models import Token
 from allauth.socialaccount.providers.oauth.client import OAuthError
 from allauth.socialaccount.providers.oauth2.client import OAuth2Error
 
+from notifications.utils import send_sms_notification
+
 
 
 #reg and login
@@ -145,6 +147,10 @@ class LoginAPIView(LoginView):
 
         # Create or retrieve a Token for the user
         token, created = Token.objects.get_or_create(user=self.user)
+
+        # Send SMS notification after successful login
+        if self.user.is_authenticated:
+            send_sms_notification(self.user)  # Call the notification function
 
         return self.get_response()
 

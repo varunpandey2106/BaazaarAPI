@@ -8,6 +8,13 @@ from rest_framework.exceptions import PermissionDenied, NotAcceptable
 from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
 from fcm_django.models import FCMDevice
+# from .twilio import send_otp, verify_otp
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate, login
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 
 # Create your views here.
 class NotificationListView(ListAPIView):  #get list of all notifs of user
@@ -82,3 +89,41 @@ class CreateDeviceAPIView(APIView):
         serializer.save(user=user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
+# @csrf_exempt
+# def custom_login(request):
+#     if login_successful:
+
+
+
+# @csrf_exempt
+# def verify_otp_view(request):
+#     if request.method == 'POST':
+#         otp_code = request.POST.get('otp_code')
+#         verification_id = request.session.get('verification_id')
+
+#         if verification_id:
+#             verification_status = verify_otp(verification_id, otp_code)
+
+#             if verification_status == 'approved':
+#                 # OTP is valid, complete the login process
+#                 user = authenticate(request, verification_status='verified')
+#                 if user is not None:
+#                     login(request, user)
+#                     return JsonResponse({'message': 'Login successful'})
+#                 else:
+#                     return JsonResponse({'error': 'Invalid user'})
+
+#             else:
+#                 # OTP is invalid
+#                 return JsonResponse({'error': 'Invalid OTP'})
+
+#         else:
+#             return JsonResponse({'error': 'Verification ID not found'})
+    
+#     return JsonResponse({"error": "invalid request"})
+
+
+def incoming_sms(request):
+    # Process incoming SMS message here
+    return HttpResponse(status=200)
