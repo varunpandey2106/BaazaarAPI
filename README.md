@@ -37,6 +37,10 @@ Baazaar API is an online retail backend project  that utilises Django and Django
 - **Swagger**
 - **Docker**
 
+## Twilio Integration
+
+![Screenshot_20231007_225049_Messages](https://github.com/varunpandey2106/BaazaarAPI/assets/77747699/8b8c75b5-c04d-4e16-9909-0ac0ece5a4d7)
+
 
 ## Installation
 
