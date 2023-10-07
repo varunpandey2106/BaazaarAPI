@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from .serializers import CartItemSerializer, CartItemUpdateSerializer, CartAddItemSerializer
+from .serializers import CartItemSerializer, CartItemUpdateSerializer, CartAddItemSerializer, CartRemoveItemSerializer
 from .models import Cart, CartItem
 from products.models import Product
 from rest_framework import permissions, status
@@ -150,3 +150,27 @@ def add_to_cart(request, cart_id):
 
         return Response({'message': 'Product added to cart successfully'}, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def remove_from_cart(request, cart_id, cart_item_id):
+    serializer= CartRemoveItemSerializer(data=request.data)
+    if serializer.is_valid():
+        #check if item belongs to cart 
+        try: 
+            cart_item=CartItem.objects.get(pk=cart_item_id, cart_id=cart_id, cart__user=request.user)
+        except CartItem.DoesNotExist:
+            return Response({"message": "cart item not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        #check if the cart item belongs to the user's cart and delete it
+
+        if cart_item.item.user ==request.user:
+            cart_item.delete()
+            #updating cart's total after deletion
+            cart_item.cart.update_total()
+            return Response({"message": "item removed from cart successfully"}, status= status.HTTP_200_OK)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #If the CartItem is not found or it does not belong to the expected cart or user, 
+    #the view returns a response with a 404 status code, 
+    #indicating that the requested cart item was not found.
