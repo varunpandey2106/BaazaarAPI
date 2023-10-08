@@ -149,8 +149,8 @@ class LoginAPIView(LoginView):
         token, created = Token.objects.get_or_create(user=self.user)
 
         # Send SMS notification after successful login
-        if self.user.is_authenticated:
-            send_sms_notification(self.user)  # Call the notification function
+        # if self.user.is_authenticated:
+        #     send_sms_notification(self.user)  # Call the notification function
 
         return self.get_response()
 

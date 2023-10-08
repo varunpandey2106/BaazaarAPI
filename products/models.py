@@ -187,3 +187,4 @@ class ProductViews(TimeStampedModel):
         Product, related_name="product_views", on_delete=models.CASCADE
     )
 
+

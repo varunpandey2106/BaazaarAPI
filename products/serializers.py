@@ -14,7 +14,7 @@ from .search_indexes import ProductIndex
 class CategoryListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        exclude = "modified"
+        exclude = []
 
 class ProductSerializer(serializers.ModelSerializer):
     seller = serializers.SlugRelatedField(slug_field="username", queryset=User.objects)
@@ -25,7 +25,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        exclude = "modified"
+        exclude = []
 
 class SerpyProductSerializer(serpy.Serializer):
     seller=serpy.StrField()
@@ -51,7 +51,7 @@ class ProductMinSerializer(serializers.ModelSerializer): #list of products with 
 class CreateProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        exclude = ("modified",)
+        exclude = ()
         # read_only_fields = ('id', 'seller', 'category', 'title', 'price', 'image', 'description', 'quantity', 'views',)
 
 class ProductDetailSerializer(serializers.ModelSerializer):
@@ -64,12 +64,12 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        exclude = "modified"
+        exclude = ["modified"]
 
 class ProductViewSerializer(serializers.ModelSerializer):
     class Meta:
         model= ProductViews
-        exclude="modified"
+        exclude=["modified"]
 
 class ProductDocumentSerializer(DocumentSerializer):
     seller = serializers.SlugRelatedField(slug_field="username", queryset=User.objects)
@@ -81,7 +81,7 @@ class ProductDocumentSerializer(DocumentSerializer):
     class Meta(object):
         # model = Product
         document = ProductDocument
-        exclude = "modified"
+        exclude = ["modified"]
 
 class ProductIndexSerializer(HaystackSerializer):
     class Meta:
@@ -97,6 +97,6 @@ class ProductIndexSerializer(HaystackSerializer):
 class ProductViewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductViews
-        exclude = "modified"
+        exclude = ["modified"]
 
 

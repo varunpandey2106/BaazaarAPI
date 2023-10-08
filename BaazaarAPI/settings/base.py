@@ -89,7 +89,9 @@ INSTALLED_APPS = [
     'django_elasticsearch_dsl_drf',
     'haystack',
     'fcm_django',
-    'django_twilio'
+    'django_twilio',
+    'rest_framework_swagger',
+    'drf_yasg'
 
 
 
@@ -291,17 +293,21 @@ CELERY_TIMEZONE = 'UTC'
 # LOGIN_REDIRECT_URL = 'profile/1/'  # Set this to your desired post-login redirect URL.
 
 
-#STRIPE CONFIG
-# STRIPE_SECRET_KEY = "sk_test_51NtTGFSHsEba2yrqHZu5ab6jQZciMF2VHzJ7GO6wKVbOOocC9a3OinSpMBenPviye1Y27nYDfdaBTNC4J308TfGG00o2BvYLnB"
-# STRIPE_PUBLISHABLE_KEY = 'pk_test_51NtTGFSHsEba2yrqsGRzIwMFYA3mON7uKtRx2aypPFUnVWEOuzH9REfwM3T6fqWVXxUGNwYnweEpviBs2wmo6a5b00JUOq9nxg'
-# STRIPE_SECRET_WEBHOOK=""
+# STRIPE CONFIG
+STRIPE_SECRET_KEY_TEST = "sk_test_51NtTGFSHsEba2yrqHZu5ab6jQZciMF2VHzJ7GO6wKVbOOocC9a3OinSpMBenPviye1Y27nYDfdaBTNC4J308TfGG00o2BvYLnB"
+STRIPE_PUBLISHABLE_KEY = ""
 
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
+import os
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 STATIC_URL = 'static/'
+
+
+
 
 
 # Default primary key field type

@@ -225,7 +225,7 @@ class DeactivateUserSerializer(serializers.ModelSerializer):
 class SMSVerificationSerializer(serializers.ModelSerializer):
     class Meta:
         model=SMSVerification
-        exclude= "modified"
+        exclude= ["modified"]
 
 class SMSPinSerializer(serializers.Serializer):
     pin= serializers.IntegerField()

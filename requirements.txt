@@ -122,3 +122,5 @@ rest-social-auth==8.1.0
 social-auth-app-django==5.3.0 
 social-auth-core==4.4.2
 rest_framework_simplejwt===0.0.2
+pyyaml==6.0.1
+MarkupSafe-2.1.3 coreapi-2.3.3 coreschema-0.0.4 django-rest-swagger-2.2.0 itypes-1.2.0 jinja2-3.1.2 openapi-codec-1.3.2 simplejson-3.19.2
