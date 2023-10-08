@@ -41,6 +41,14 @@ Baazaar API is an online retail backend project  that utilises Django and Django
 
 ![Screenshot_20231007_225049_Messages](https://github.com/varunpandey2106/BaazaarAPI/assets/77747699/8b8c75b5-c04d-4e16-9909-0ac0ece5a4d7)
 
+## Swagger
+
+![Screenshot 2023-10-08 204818](https://github.com/varunpandey2106/BaazaarAPI/assets/77747699/9183b5db-c0ca-4292-adcf-47511bdb71c1)
+![Screenshot 2023-10-08 204928](https://github.com/varunpandey2106/BaazaarAPI/assets/77747699/44e10202-3ce1-4230-b573-fca59330ec42)
+![Screenshot 2023-10-08 205140](https://github.com/varunpandey2106/BaazaarAPI/assets/77747699/f6b93f57-de88-40af-bca5-705c8c207064)
+![Screenshot 2023-10-08 205238](https://github.com/varunpandey2106/BaazaarAPI/assets/77747699/09dc8ae9-3217-46fd-960b-25e4401ea011)
+![Screenshot 2023-10-08 205342](https://github.com/varunpandey2106/BaazaarAPI/assets/77747699/847037d6-c833-47c7-96b4-f29575fb15bf)
+
 
 ## Installation
 
